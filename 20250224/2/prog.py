@@ -21,15 +21,19 @@ def move_player(direction):
     print(f"Moved to ({x}, {y})")
     encounter(x, y)
 
-def add_monster(x, y, hello):
-    if field[x][y] is not None:
-        print("Replaced the old monster")
-    field[x][y] = hello
-    print(f"Added monster to ({x}, {y}) saying {hello}")
+def add_monster(name, x, y, hello):
+<<<<<<< HEAD
+=======
+    # Проверка, что имя монстра есть в списке доступных существ
+    if name not in cowsay.list_cows():
+        print("Cannot add unknown monster")
+        return
+>>>>>>> b33ee56 (добавление в обработку команды addmon проверки того, что <name> - имя штатного существа)
 
 def encounter(x, y):
     if field[x][y] is not None:
-        cowsay.cow(field[x][y])
+        monster = field[x][y]
+        cowsay.cow(monster['hello'])
 
 def process_command(command):
     parts = command.split()
@@ -42,17 +46,18 @@ def process_command(command):
             return
         move_player(cmd)
     elif cmd == 'addmon':
-        if len(parts) != 4:
+        if len(parts) != 5:
             print("Invalid arguments")
             return
         try:
-            x = int(parts[1])
-            y = int(parts[2])
-            hello = parts[3]
+            name = parts[1]
+            x = int(parts[2])
+            y = int(parts[3])
+            hello = parts[4]
             if not (0 <= x < field_size and 0 <= y < field_size):
                 print("Invalid arguments")
                 return
-            add_monster(x, y, hello)
+            add_monster(name, x, y, hello)
         except ValueError:
             print("Invalid arguments")
     else:
@@ -73,4 +78,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
