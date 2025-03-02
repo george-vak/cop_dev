@@ -22,18 +22,18 @@ def move_player(direction):
     encounter(x, y)
 
 def add_monster(name, x, y, hello):
-<<<<<<< HEAD
-=======
-    # Проверка, что имя монстра есть в списке доступных существ
     if name not in cowsay.list_cows():
         print("Cannot add unknown monster")
         return
->>>>>>> b33ee56 (добавление в обработку команды addmon проверки того, что <name> - имя штатного существа)
+    if field[x][y] is not None:
+        print("Replaced the old monster")
+    field[x][y] = {'name': name, 'hello': hello}
+    print(f"Added monster {name} to ({x}, {y}) saying {hello}")
 
 def encounter(x, y):
     if field[x][y] is not None:
         monster = field[x][y]
-        cowsay.cow(monster['hello'])
+        cowsay.cow(monster['hello'], cow=monster['name'])
 
 def process_command(command):
     parts = command.split()
