@@ -1,5 +1,11 @@
 from io import StringIO
 import cowsay
+<<<<<<< HEAD
+=======
+
+print("<<< Welcome to Python-MUD 0.1 >>>")
+
+>>>>>>> 3aec64c (merged)
 import shlex
 
 field = [[0 for j in range(10)] for i in range(10)]
