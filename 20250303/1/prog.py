@@ -1,19 +1,9 @@
 from io import StringIO
 import cowsay
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-
-print("<<< Welcome to Python-MUD 0.1 >>>")
-
->>>>>>> 3aec64c (merged)
-=======
->>>>>>> b6b1153 (debug)
 import shlex
 
 field = [[0 for j in range(10)] for i in range(10)]
 allowed_list = cowsay.list_cows()
-<<<<<<< HEAD
 
 jgsbat = cowsay.read_dot_cow(StringIO("""
 $the_cow = <<EOC;
@@ -30,7 +20,6 @@ EOC
 """))
 
 def encounter(x, y):
-<<<<<<< HEAD
     name = field[y][x]['name']
     word = field[y][x]['word']
 
@@ -38,17 +27,6 @@ def encounter(x, y):
         print(cowsay.cowsay(word, cowfile=jgsbat))
     else:
         print(cowsay.cowsay(word, cow=name))
-=======
-    cow_function = getattr(cowsay, field[y][x]["name"])
-    cow_function(field[y][x]["word"])
->>>>>>> de163f4 (финальная версия)
-=======
-
-def encounter(x, y):
-    name = field[y][x]['name']
-    word = field[y][x]['word']
-    print(cowsay.cowsay(word, cow=name))
->>>>>>> b6b1153 (debug)
 
 x, y = 0, 0
 while inp := input():
@@ -124,12 +102,4 @@ while inp := input():
             print('Invalid command')
 
 # пример команды
-<<<<<<< HEAD
-<<<<<<< HEAD
 # addmon dragon hp 999 coords 0 1 hello "Who goes there?"
-=======
-# addmon dragon hp 999 coords 0 1 hello "Who goes there?"
->>>>>>> de163f4 (финальная версия)
-=======
-# addmon dragon hp 999 coords 0 1 hello "Who goes there?"
->>>>>>> b6b1153 (debug)
