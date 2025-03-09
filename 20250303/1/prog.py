@@ -1,13 +1,35 @@
+from io import StringIO
 import cowsay
 
 
 field = [[0 for j in range(10)] for i in range(10)]
-allowed_list = cowsay.char_names
+allowed_list = cowsay.list_cows()
+
+
+jgsbat = cowsay.read_dot_cow(StringIO("""
+$the_cow = <<EOC;
+    ,_                    _,
+    ) '-._  ,_    _,  _.-' (
+    )  _.-'.|\\--//|.'-._  (
+     )'   .'\\/o\\/o\\/'.   `(
+      ) .' . \\====/ . '. (
+       )  / <<    >> \\  (
+        '-._/``  ``\\_.-'
+  jgs     __\\'--'//__
+         (((""`  `"")))
+EOC
+"""))
+
+
 
 def encounter(x, y):
     out = field[y][x].split()
-    cow_function = getattr(cowsay, out[0])
-    cow_function(out[1])
+
+    if out[0] == "jgsbat":
+        print(cowsay.cowsay(out[1], cowfile=jgsbat))
+    else:
+        print(cowsay.cowsay(out[1], cow=out[0]))
+
 
 x, y = 0, 0
 while inp := input():
@@ -48,7 +70,7 @@ while inp := input():
                 print("Invalid arguments")
                 continue
 
-            if inp[1] not in allowed_list:
+            if inp[1] not in allowed_list and inp[1] != "jgsbat":
                 print("Cannot add unknown monster")
                 continue
 
