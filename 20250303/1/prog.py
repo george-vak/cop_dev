@@ -5,15 +5,12 @@ field = [[0 for j in range(10)] for i in range(10)]
 allowed_list = cowsay.char_names
 
 def encounter(x, y):
-
     cow_function = getattr(cowsay, field[y][x]["name"])
     cow_function(field[y][x]["word"])
 
 x, y = 0, 0
 while inp := input():
     inp = shlex.split(inp)
-    # print(inp)
-
     moved = 0
     if inp[0] == 'up':
         y = (y - 1) % 10
@@ -84,4 +81,5 @@ while inp := input():
         else:
             print('Invalid command')
 
-# addmon tux hello SIUUUU hp 120 coords 0 1
+# пример команды
+# addmon dragon hp 999 coords 0 1 hello "Who goes there?"
