@@ -79,6 +79,7 @@ while inp := input():
             else:
                 print(f'Replaced the old monster')
 
+            field[m_y][m_x] = {'name': curr_name, 'word': curr_word, 'hp': curr_hp}
 
         else:
             print('Invalid command')
