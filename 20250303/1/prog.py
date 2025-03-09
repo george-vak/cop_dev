@@ -20,6 +20,7 @@ EOC
 """))
 
 def encounter(x, y):
+<<<<<<< HEAD
     name = field[y][x]['name']
     word = field[y][x]['word']
 
@@ -27,6 +28,10 @@ def encounter(x, y):
         print(cowsay.cowsay(word, cowfile=jgsbat))
     else:
         print(cowsay.cowsay(word, cow=name))
+=======
+    cow_function = getattr(cowsay, field[y][x]["name"])
+    cow_function(field[y][x]["word"])
+>>>>>>> de163f4 (финальная версия)
 
 x, y = 0, 0
 while inp := input():
@@ -102,4 +107,8 @@ while inp := input():
             print('Invalid command')
 
 # пример команды
+<<<<<<< HEAD
 # addmon dragon hp 999 coords 0 1 hello "Who goes there?"
+=======
+# addmon dragon hp 999 coords 0 1 hello "Who goes there?"
+>>>>>>> de163f4 (финальная версия)
