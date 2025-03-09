@@ -1,7 +1,7 @@
 from io import StringIO
 import cowsay
 
-
+print("<<< Welcome to Python-MUD 0.1 >>>")
 field = [[0 for j in range(10)] for i in range(10)]
 allowed_list = cowsay.list_cows()
 
