@@ -120,6 +120,20 @@ class MUD(cmd.Cmd):
             return [cmd for cmd in commands if cmd.startswith(text)]
 
     def do_attack(self, arg):
+        if not arg:
+            print("укажите имя монстра")
+            return
+        else:
+            arg = shlex.split(arg)
+
+        if arg[0] in self.allowed_list and (
+            self.field[self.y][self.x]["name"] == arg[0]):
+            pass
+        else:
+            print(f"No {arg[0]} here")
+            return
+
+
         if self.field[self.y][self.x] == 0:
             print(f"No monster here")
             return
