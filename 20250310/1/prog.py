@@ -5,8 +5,6 @@ import cowsay
 import shlex
 
 
-
-
 class MUD(cmd.Cmd):
     prompt = ">> "
     def __init__(self):
@@ -112,6 +110,14 @@ class MUD(cmd.Cmd):
             print(f'Replaced the old monster')
 
         self.field[m_y][m_x] = {'name': curr_name, 'word': curr_word, 'hp': curr_hp}
+
+    def com_addition(self, text, line, begidx, endidx):
+        commands = [cmd[3:] for cmd in self.get_names() if cmd.startswith("do_")]
+
+        if not text:
+            return commands
+        else:
+            return [cmd for cmd in commands if cmd.startswith(text)]
 
 
 # пример команды
