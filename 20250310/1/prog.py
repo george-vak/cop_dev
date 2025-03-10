@@ -26,7 +26,6 @@ class MUD(cmd.Cmd):
         EOC
         """))
 
-
     def encounter(self):
         if self.field[self.y][self.x] == 0:
             print(f'Moved to ({self.x}, {self.y})')
@@ -39,8 +38,6 @@ class MUD(cmd.Cmd):
             print(cowsay.cowsay(word, cowfile=self.jgsbat))
         else:
             print(cowsay.cowsay(word, cow=name))
-
-
 
     def do_up(self, arg):
         self.y = (self.y - 1) % 10
@@ -66,16 +63,15 @@ class MUD(cmd.Cmd):
             return
 
         curr_name = inp[0]
-        # print(curr_name)
         if curr_name not in self.allowed_list and curr_name != "jgsbat":
             print("Cannot add unknown monster")
             return
 
         m_x, m_y, curr_hp = 0, 0, 0
         curr_word = ""
-        ii = 2
+        ii = 1
         while ii < 8:
-            # print(inp[ii], ii)
+            # print(inp[ii])
             match inp[ii]:
                 case "hello":
                     curr_word = inp[ii+1]
@@ -85,9 +81,11 @@ class MUD(cmd.Cmd):
                     try:
                         curr_hp = int(inp[ii+1])
                     except Exception:
-                        break
+                        print("Invalid command")
+                        return
                     if curr_hp < 1:
-                        break
+                        print("Invalid command")
+                        return
                     ii += 1
 
                 case "coords":
@@ -101,6 +99,8 @@ class MUD(cmd.Cmd):
                         print("Invalid command")
                         return
                     ii += 2
+
+
             ii += 1
 
 
@@ -119,9 +119,26 @@ class MUD(cmd.Cmd):
         else:
             return [cmd for cmd in commands if cmd.startswith(text)]
 
+    def do_attack(self, arg):
+        if self.field[self.y][self.x] == 0:
+            print(f"No monster here")
+            return
+        elif self.field[self.y][self.x]["hp"] <= 10:
+            print(f"{self.field[self.y][self.x]["name"]} died")
+            self.field[self.y][self.x] = 0
+            return
+        else:
+            self.field[self.y][self.x]["hp"] -= 10
+
+            print(f"{self.field[self.y][self.x]["name"]} now has {
+            self.field[self.y][self.x]["hp"]}")
+
+
+
+
 
 # пример команды
-# addmon dragon hp 999 coords 0 1 hello "Who goes there?"
+# addmon www hp 14 coords 0 0 hello "Who goes there?"
 
 if __name__ == "__main__":
 
