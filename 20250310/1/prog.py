@@ -4,6 +4,8 @@ from io import StringIO
 import cowsay
 import shlex
 
+from numpy.ma.core import swapaxes
+
 
 class MUD(cmd.Cmd):
     prompt = ">> "
@@ -119,16 +121,34 @@ class MUD(cmd.Cmd):
         else:
             return [cmd for cmd in commands if cmd.startswith(text)]
 
-    def do_attack(self, arg):
+    def do_attack(self, arg=""):
+        arsenal = {"sword": 10, "spear": 15, "axe": 20}
+        arg = shlex.split(arg)
+        arg.append("sword")
+
+        if arg[0] == "with":
+            if arg[1] in arsenal:
+                weap = arg[1]
+            else:
+                print("Unknown weapon")
+                return
+        elif arg[0] == "sword":
+            weap = arg[0]
+        else:
+            print("Invalid command")
+            return
+
+
+
         if self.field[self.y][self.x] == 0:
             print(f"No monster here")
             return
-        elif self.field[self.y][self.x]["hp"] <= 10:
+        elif self.field[self.y][self.x]["hp"] <= arsenal[weap]:
             print(f"{self.field[self.y][self.x]["name"]} died")
             self.field[self.y][self.x] = 0
             return
         else:
-            self.field[self.y][self.x]["hp"] -= 10
+            self.field[self.y][self.x]["hp"] -= arsenal[weap]
 
             print(f"{self.field[self.y][self.x]["name"]} now has {
             self.field[self.y][self.x]["hp"]}")
