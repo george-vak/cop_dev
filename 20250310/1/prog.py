@@ -4,8 +4,6 @@ from io import StringIO
 import cowsay
 import shlex
 
-from numpy.ma.core import swapaxes
-
 
 class MUD(cmd.Cmd):
     prompt = ">> "
@@ -13,20 +11,22 @@ class MUD(cmd.Cmd):
         super().__init__()
         self.x, self.y = 0, 0
         self.field = [[0 for j in range(10)] for i in range(10)]
-        self.allowed_list = cowsay.list_cows()
-        self.jgsbat = cowsay.read_dot_cow(StringIO("""
-        $the_cow = <<EOC;
-            ,_                    _,
-            ) '-._  ,_    _,  _.-' (
-            )  _.-'.|\\--//|.'-._  (
-             )'   .'\\/o\\/o\\/'.   `(
-              ) .' . \\====/ . '. (
-               )  / <<    >> \\  (
-                '-._/``  ``\\_.-'
-          jgs     __\\'--'//__
-                 (((""`  `"")))
-        EOC
-        """))
+        self.arsenal = {"sword": 10, "spear": 15, "axe": 20}
+        self.allowed_list = ["cow", "www", "tux"]
+        # self.allowed_list = cowsay.list_cows()
+        # self.jgsbat = cowsay.read_dot_cow(StringIO("""
+        # $the_cow = <<EOC;
+        #     ,_                    _,
+        #     ) '-._  ,_    _,  _.-' (
+        #     )  _.-'.|\\--//|.'-._  (
+        #      )'   .'\\/o\\/o\\/'.   `(
+        #       ) .' . \\====/ . '. (
+        #        )  / <<    >> \\  (
+        #         '-._/``  ``\\_.-'
+        #   jgs     __\\'--'//__
+        #          (((""`  `"")))
+        # EOC
+        # """))
 
     def encounter(self):
         if self.field[self.y][self.x] == 0:
@@ -36,10 +36,12 @@ class MUD(cmd.Cmd):
         name = self.field[self.y][self.x]['name']
         word = self.field[self.y][self.x]['word']
 
-        if name == "jgsbat":
-            print(cowsay.cowsay(word, cowfile=self.jgsbat))
-        else:
-            print(cowsay.cowsay(word, cow=name))
+        print(f"|{name}| ---- /{word}/")
+
+        # if name == "jgsbat":
+        #     print(cowsay.cowsay(word, cowfile=self.jgsbat))
+        # else:
+        #     print(cowsay.cowsay(word, cow=name))
 
     def do_up(self, arg):
         self.y = (self.y - 1) % 10
@@ -113,21 +115,12 @@ class MUD(cmd.Cmd):
 
         self.field[m_y][m_x] = {'name': curr_name, 'word': curr_word, 'hp': curr_hp}
 
-    def com_addition(self, text, line, begidx, endidx):
-        commands = [cmd[3:] for cmd in self.get_names() if cmd.startswith("do_")]
-
-        if not text:
-            return commands
-        else:
-            return [cmd for cmd in commands if cmd.startswith(text)]
-
     def do_attack(self, arg=""):
-        arsenal = {"sword": 10, "spear": 15, "axe": 20}
         arg = shlex.split(arg)
         arg.append("sword")
 
         if arg[0] == "with":
-            if arg[1] in arsenal:
+            if arg[1] in self.arsenal:
                 weap = arg[1]
             else:
                 print("Unknown weapon")
@@ -135,7 +128,7 @@ class MUD(cmd.Cmd):
         elif arg[0] == "sword":
             weap = arg[0]
         else:
-            print("Invalid command")
+            print("ожидается: attack with <weap_name>")
             return
 
 
@@ -143,18 +136,21 @@ class MUD(cmd.Cmd):
         if self.field[self.y][self.x] == 0:
             print(f"No monster here")
             return
-        elif self.field[self.y][self.x]["hp"] <= arsenal[weap]:
+        elif self.field[self.y][self.x]["hp"] <= self.arsenal[weap]:
             print(f"{self.field[self.y][self.x]["name"]} died")
             self.field[self.y][self.x] = 0
             return
         else:
-            self.field[self.y][self.x]["hp"] -= arsenal[weap]
+            self.field[self.y][self.x]["hp"] -= self.arsenal[weap]
 
             print(f"{self.field[self.y][self.x]["name"]} now has {
             self.field[self.y][self.x]["hp"]}")
 
+    def complete_attack(self, text, line, begidx, endidx):
 
-
+        if text == "with":
+            return self.arsenal
+        return [weap for weap in self.arsenal if weap.startswith(text)]
 
 
 # пример команды
