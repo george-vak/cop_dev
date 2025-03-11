@@ -11,6 +11,7 @@ class MUD(cmd.Cmd):
         super().__init__()
         self.x, self.y = 0, 0
         self.field = [[0 for j in range(10)] for i in range(10)]
+        # self.allowed_list = ["cow", "www", "tux", "dragon"]
         self.allowed_list = cowsay.list_cows()
         self.jgsbat = cowsay.read_dot_cow(StringIO("""
         $the_cow = <<EOC;
@@ -33,6 +34,9 @@ class MUD(cmd.Cmd):
 
         name = self.field[self.y][self.x]['name']
         word = self.field[self.y][self.x]['word']
+
+        # print(f"|{name}| ---- /{word}/")
+
 
         if name == "jgsbat":
             print(cowsay.cowsay(word, cowfile=self.jgsbat))
@@ -121,22 +125,19 @@ class MUD(cmd.Cmd):
 
     def do_attack(self, arg):
         if not arg:
-            print("укажите имя монстра")
+            print("Укажите имя монстра для атаки")
             return
         else:
             arg = shlex.split(arg)
 
-        if arg[0] in self.allowed_list and (
-            self.field[self.y][self.x]["name"] == arg[0]):
-            pass
-        else:
-            print(f"No {arg[0]} here")
-            return
-
-
         if self.field[self.y][self.x] == 0:
             print(f"No monster here")
             return
+
+        elif arg[0] not in self.field[self.y][self.x]["name"]:
+            print(f"No {arg[0]} here")
+            return
+
         elif self.field[self.y][self.x]["hp"] <= 10:
             print(f"{self.field[self.y][self.x]["name"]} died")
             self.field[self.y][self.x] = 0
@@ -147,13 +148,21 @@ class MUD(cmd.Cmd):
             print(f"{self.field[self.y][self.x]["name"]} now has {
             self.field[self.y][self.x]["hp"]}")
 
+    def complete_(self, text, line, begidx, endidx):
+        commands = [cmd[3:] for cmd in self.get_names() if cmd.startswith("do_")]
+        if not text:
+            return commands
+        return [cmd for cmd in commands if cmd.startswith(text)]
 
+    def complete_attack(self, text, line, begidx, endidx):
+        if not text:
+            return self.allowed_list
 
+        return [targ for targ in self.allowed_list if targ.startswith(text)]
 
 
 # пример команды
 # addmon www hp 14 coords 0 0 hello "Who goes there?"
 
 if __name__ == "__main__":
-
     MUD().cmdloop()
