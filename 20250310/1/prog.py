@@ -12,21 +12,21 @@ class MUD(cmd.Cmd):
         self.x, self.y = 0, 0
         self.field = [[0 for j in range(10)] for i in range(10)]
         self.arsenal = {"sword": 10, "spear": 15, "axe": 20}
-        self.allowed_list = ["cow", "www", "tux"]
-        # self.allowed_list = cowsay.list_cows()
-        # self.jgsbat = cowsay.read_dot_cow(StringIO("""
-        # $the_cow = <<EOC;
-        #     ,_                    _,
-        #     ) '-._  ,_    _,  _.-' (
-        #     )  _.-'.|\\--//|.'-._  (
-        #      )'   .'\\/o\\/o\\/'.   `(
-        #       ) .' . \\====/ . '. (
-        #        )  / <<    >> \\  (
-        #         '-._/``  ``\\_.-'
-        #   jgs     __\\'--'//__
-        #          (((""`  `"")))
-        # EOC
-        # """))
+        # self.allowed_list = ["cow", "www", "tux"]
+        self.allowed_list = cowsay.list_cows()
+        self.jgsbat = cowsay.read_dot_cow(StringIO("""
+        $the_cow = <<EOC;
+            ,_                    _,
+            ) '-._  ,_    _,  _.-' (
+            )  _.-'.|\\--//|.'-._  (
+             )'   .'\\/o\\/o\\/'.   `(
+              ) .' . \\====/ . '. (
+               )  / <<    >> \\  (
+                '-._/``  ``\\_.-'
+          jgs     __\\'--'//__
+                 (((""`  `"")))
+        EOC
+        """))
 
     def encounter(self):
         if self.field[self.y][self.x] == 0:
@@ -36,12 +36,12 @@ class MUD(cmd.Cmd):
         name = self.field[self.y][self.x]['name']
         word = self.field[self.y][self.x]['word']
 
-        print(f"|{name}| ---- /{word}/")
+        # print(f"|{name}| ---- /{word}/")
 
-        # if name == "jgsbat":
-        #     print(cowsay.cowsay(word, cowfile=self.jgsbat))
-        # else:
-        #     print(cowsay.cowsay(word, cow=name))
+        if name == "jgsbat":
+            print(cowsay.cowsay(word, cowfile=self.jgsbat))
+        else:
+            print(cowsay.cowsay(word, cow=name))
 
     def do_up(self, arg):
         self.y = (self.y - 1) % 10
