@@ -12,8 +12,7 @@ class MUD(cmd.Cmd):
         self.x, self.y = 0, 0
         self.field = [[0 for j in range(10)] for i in range(10)]
         self.arsenal = {"sword": 10, "spear": 15, "axe": 20}
-        # self.allowed_list = ["cow", "www", "tux"]
-        self.allowed_list = cowsay.list_cows()
+
         self.jgsbat = cowsay.read_dot_cow(StringIO("""
         $the_cow = <<EOC;
             ,_                    _,
@@ -27,6 +26,7 @@ class MUD(cmd.Cmd):
                  (((""`  `"")))
         EOC
         """))
+        self.allowed_list = cowsay.list_cows() + ["jgsbat"]
 
     def encounter(self):
         if self.field[self.y][self.x] == 0:
@@ -35,8 +35,6 @@ class MUD(cmd.Cmd):
 
         name = self.field[self.y][self.x]['name']
         word = self.field[self.y][self.x]['word']
-
-        # print(f"|{name}| ---- /{word}/")
 
         if name == "jgsbat":
             print(cowsay.cowsay(word, cowfile=self.jgsbat))
@@ -116,46 +114,60 @@ class MUD(cmd.Cmd):
         self.field[m_y][m_x] = {'name': curr_name, 'word': curr_word, 'hp': curr_hp}
 
     def do_attack(self, arg=""):
-        arg = shlex.split(arg)
-        arg.append("sword")
-
-        if arg[0] == "with":
-            if arg[1] in self.arsenal:
-                weap = arg[1]
-            else:
-                print("Unknown weapon")
-                return
-        elif arg[0] == "sword":
-            weap = arg[0]
-        else:
-            print("ожидается: attack with <weap_name>")
-            return
-
-
-
         if self.field[self.y][self.x] == 0:
             print(f"No monster here")
             return
-        elif self.field[self.y][self.x]["hp"] <= self.arsenal[weap]:
-            print(f"{self.field[self.y][self.x]["name"]} died")
-            self.field[self.y][self.x] = 0
+
+        if not arg:
+            print("Укажите имя монстра для атаки")
             return
         else:
-            self.field[self.y][self.x]["hp"] -= self.arsenal[weap]
+            arg = shlex.split(arg)
+        arg.append("sword")
 
-            print(f"{self.field[self.y][self.x]["name"]} now has {
-            self.field[self.y][self.x]["hp"]}")
+        if arg[0] != self.field[self.y][self.x]["name"]:
+            print(f"No {arg[0]} here")
+            return
+
+        if arg[1] == "with":
+            if arg[2] in self.arsenal:
+                weap = arg[2]
+            else:
+                print("Unknown weapon")
+                return
+        elif arg[1] == "sword":
+            weap = arg[1]
+        else:
+            print("ожидается: attack <mons_name> with <weap_name>")
+            return
+
+
+        if self.field[self.y][self.x]["hp"] <= self.arsenal[weap]:
+            print(f"{self.field[self.y][self.x]['name']} died")
+            self.field[self.y][self.x] = 0
+            return
+
+        else:
+            self.field[self.y][self.x]["hp"] -= self.arsenal[weap]
+            print(f"{self.field[self.y][self.x]['name']} now has {
+            self.field[self.y][self.x]['hp']}")
 
     def complete_attack(self, text, line, begidx, endidx):
+        words = shlex.split(line[:endidx])
+        if len(words) == 1:
+            return self.allowed_list
+        elif len(words) == 2:
+            return [mons for mons in self.allowed_list if mons.startswith(text)]
 
-        if text == "with":
-            return self.arsenal
-        return [weap for weap in self.arsenal if weap.startswith(text)]
+        elif len(words) == 3 and words[2] == "with":
+            return list(self.arsenal)
+        elif len(words) == 4 and words[2] == "with":
+            return [weap for weap in self.arsenal if weap.startswith(text)]
+        return []
 
 
 # пример команды
 # addmon www hp 14 coords 0 0 hello "Who goes there?"
 
 if __name__ == "__main__":
-
     MUD().cmdloop()
