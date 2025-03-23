@@ -5,9 +5,11 @@ y = 0
 field = [[0 for j in range(10)] for i in range(10)]
 
 def handle_comm(comm):
-    global x, y
-    if comm.startswith("move"):
-        parts = comm.split()
+    global x, y, field
+    parts = comm.split()
+
+    if parts[0] == "move":
+        # move x y
         dx = int(parts[1])
         dy = int(parts[2])
         x = (x + dx) % 10
@@ -16,9 +18,27 @@ def handle_comm(comm):
         if field[y][x] == 0:
             return f"{x} {y}"
         else:
-            return "aaaa"
+            name = field[y][x]['name']
+            word = field[y][x]['word']
+            return f"{name} {word}"
+
+    elif parts[0] == "add":
+        # add name x y word hp
+        curr_name = str(parts[1])
+        m_x = int(parts[2])
+        m_y = int(parts[3])
+        curr_word = str(parts[4])
+        curr_hp = int(parts[5])
+        if field[m_y][m_x] == 0:
+            field[m_y][m_x] = {'name': curr_name, 'word': curr_word, 'hp': curr_hp}
+            return f"Added monster {curr_name} to ({m_x}, {m_y}) saying {curr_word}"
+        else:
+            field[m_y][m_x] = {'name': curr_name, 'word': curr_word, 'hp': curr_hp}
+            return f"Replaced the old monster"
+
+
     else:
-        return "bbbb"
+        return "<<<>>>"
 
 def start_server():
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -41,7 +61,7 @@ def start_server():
                 response = handle_comm(data)
                 client_socket.send(response.encode())
         except Exception as e:
-            print(f"Ошибка {e}")
+            print(f"Ошибка::::: {e}")
         finally:
             client_socket.close()
             print("<Клиент отключен.>")
