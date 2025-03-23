@@ -1,5 +1,7 @@
 import cmd
 from io import StringIO
+from math import trunc
+
 import cowsay
 import shlex
 
@@ -17,20 +19,22 @@ class MUD(cmd.Cmd):
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.client_socket.connect(('127.0.0.1', 12345))
 
-        # self.jgsbat = cowsay.read_dot_cow(StringIO("""
-        # $the_cow = <<EOC;
-        #     ,_                    _,
-        #     ) '-._  ,_    _,  _.-' (
-        #     )  _.-'.|\\--//|.'-._  (
-        #      )'   .'\\/o\\/o\\/'.   `(
-        #       ) .' . \\====/ . '. (
-        #        )  / <<    >> \\  (
-        #         '-._/``  ``\\_.-'
-        #   jgs     __\\'--'//__
-        #          (((""`  `"")))
-        # EOC
-        # """))
-        # self.allowed_list = cowsay.list_cows() + ["jgsbat"]
+        # self.allowed_list = ["cow"]
+
+        self.jgsbat = cowsay.read_dot_cow(StringIO("""
+        $the_cow = <<EOC;
+            ,_                    _,
+            ) '-._  ,_    _,  _.-' (
+            )  _.-'.|\\--//|.'-._  (
+             )'   .'\\/o\\/o\\/'.   `(
+              ) .' . \\====/ . '. (
+               )  / <<    >> \\  (
+                '-._/``  ``\\_.-'
+          jgs     __\\'--'//__
+                 (((""`  `"")))
+        EOC
+        """))
+        self.allowed_list = cowsay.list_cows() + ["jgsbat"]
 
     # def encounter(self):
     #     if self.field[self.y][self.x] == 0:
@@ -44,38 +48,50 @@ class MUD(cmd.Cmd):
     #         print(cowsay.cowsay(word, cowfile=self.jgsbat))
     #     else:
     #         print(cowsay.cowsay(word, cow=name))
-
+    
+    def encounter(self, name, word):
+        if name == "jgsbat":
+            print(cowsay.cowsay(word, cowfile=self.jgsbat))
+        else:
+            print(cowsay.cowsay(word, cow=name))
+    
+    
     def send_comm(self, comm):
         self.client_socket.send(comm.encode())
         ans = self.client_socket.recv(1024).decode()
         return ans
 
-
-
-
     def do_up(self, arg):
         answ = self.send_comm("move 0 -1")
-        x, y = map(int, answ.split())
-        print(f'Moved to ({x}, {y})')
-
+        try:
+            x, y = map(int, answ.split())
+            print(f'Moved to ({x}, {y})')
+        except ValueError:
+            self.encounter(answ.split()[0], answ.split()[1])
+            
     def do_down(self, arg):
         answ = self.send_comm("move 0 1")
-        x, y = map(int, answ.split())
-        print(f'Moved to ({x}, {y})')
-
-
-
+        try:
+            x, y = map(int, answ.split())
+            print(f'Moved to ({x}, {y})')
+        except ValueError:
+            self.encounter(answ.split()[0], answ.split()[1])
+            
     def do_right(self, arg):
         answ = self.send_comm("move 1 0")
-        x, y = map(int, answ.split())
-        print(f'Moved to ({x}, {y})')
-
-
+        try:
+            x, y = map(int, answ.split())
+            print(f'Moved to ({x}, {y})')
+        except ValueError:
+            self.encounter(answ.split()[0], answ.split()[1])
 
     def do_left(self, arg):
         answ = self.send_comm("move -1 0")
-        x, y = map(int, answ.split())
-        print(f'Moved to ({x}, {y})')
+        try:
+            x, y = map(int, answ.split())
+            print(f'Moved to ({x}, {y})')
+        except ValueError:
+            self.encounter(answ.split()[0], answ.split()[1])
 
     def do_exit(self, arg):
         self.client_socket.send(b"exit")
@@ -83,63 +99,65 @@ class MUD(cmd.Cmd):
         print("Disconnect.")
         return True
 
+# addmon cow hp 93 hello SJSJSJS coords 0 1
+
+    def do_addmon(self, arg):
+        inp = shlex.split(arg)
+        if len(inp) != 8:
+            print("Invalid arguments <<кол-во>>")
+            return
+
+        curr_name = inp[0]
+        if curr_name not in self.allowed_list and curr_name != "jgsbat":
+            print("Cannot add unknown monster")
+            return
+
+        m_x, m_y, curr_hp = 0, 0, 0
+        curr_word = ""
+        ii = 1
+        while ii < 8:
+            match inp[ii]:
+                case "hello":
+                    curr_word = inp[ii+1]
+                    ii += 1
+
+                case "hp":
+                    try:
+                        curr_hp = int(inp[ii+1])
+                    except Exception:
+                        print("Invalid command")
+                        return
+                    if curr_hp < 1:
+                        print("Invalid command")
+                        return
+                    ii += 1
+
+                case "coords":
+                    try:
+                        m_x = int(inp[ii+1])
+                        m_y = int(inp[ii+2])
+                    except Exception:
+                        print("Invalid command")
+                        return
+                    if m_x < 0 or m_x > 9 or m_y < 0 or m_y > 9:
+                        print("Invalid command")
+                        return
+                    ii += 2
 
 
-    # def do_addmon(self, arg):
-    #     inp = shlex.split(arg)
-    #     if len(inp) != 8:
-    #         print("Invalid arguments <<кол-во>>")
-    #         return
-    #
-    #     curr_name = inp[0]
-    #     if curr_name not in self.allowed_list and curr_name != "jgsbat":
-    #         print("Cannot add unknown monster")
-    #         return
-    #
-    #     m_x, m_y, curr_hp = 0, 0, 0
-    #     curr_word = ""
-    #     ii = 1
-    #     while ii < 8:
-    #         # print(inp[ii])
-    #         match inp[ii]:
-    #             case "hello":
-    #                 curr_word = inp[ii+1]
-    #                 ii += 1
-    #
-    #             case "hp":
-    #                 try:
-    #                     curr_hp = int(inp[ii+1])
-    #                 except Exception:
-    #                     print("Invalid command")
-    #                     return
-    #                 if curr_hp < 1:
-    #                     print("Invalid command")
-    #                     return
-    #                 ii += 1
-    #
-    #             case "coords":
-    #                 try:
-    #                     m_x = int(inp[ii+1])
-    #                     m_y = int(inp[ii+2])
-    #                 except Exception:
-    #                     print("Invalid command")
-    #                     return
-    #                 if m_x < 0 or m_x > 9 or m_y < 0 or m_y > 9:
-    #                     print("Invalid command")
-    #                     return
-    #                 ii += 2
-    #
-    #
-    #         ii += 1
-    #
-    #
-    #     if self.field[m_y][m_x] == 0:
-    #         print(f'Added monster {curr_name} to ({m_x}, {m_y}) saying {curr_word}')
-    #     else:
-    #         print(f'Replaced the old monster')
-    #
-    #     self.field[m_y][m_x] = {'name': curr_name, 'word': curr_word, 'hp': curr_hp}
-    #
+            ii += 1
+
+        print(self.send_comm(f"add {curr_name} {m_x} {m_y} {curr_word} {curr_hp}"))
+
+
+
+        # if self.field[m_y][m_x] == 0:
+        #     print(f'Added monster {curr_name} to ({m_x}, {m_y}) saying {curr_word}')
+        # else:
+        #     print(f'Replaced the old monster')
+        #
+        # self.field[m_y][m_x] = {'name': curr_name, 'word': curr_word, 'hp': curr_hp}
+
     # def do_attack(self, arg=""):
     #     if self.field[self.y][self.x] == 0:
     #         print(f"No monster here")
