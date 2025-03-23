@@ -21,7 +21,8 @@ def handle_comm(comm):
             name = field[y][x]['name']
             word = field[y][x]['word']
             return f"{name} {word}"
-
+        
+        
     elif parts[0] == "add":
         # add name x y word hp
         curr_name = str(parts[1])
@@ -29,16 +30,38 @@ def handle_comm(comm):
         m_y = int(parts[3])
         curr_word = str(parts[4])
         curr_hp = int(parts[5])
+        
         if field[m_y][m_x] == 0:
             field[m_y][m_x] = {'name': curr_name, 'word': curr_word, 'hp': curr_hp}
             return f"Added monster {curr_name} to ({m_x}, {m_y}) saying {curr_word}"
         else:
             field[m_y][m_x] = {'name': curr_name, 'word': curr_word, 'hp': curr_hp}
             return f"Replaced the old monster"
-
-
+        
+        
+    elif parts[0] == "attack":
+        # attack name hit
+        name = str(parts[1])
+        hit = int(parts[2])
+        
+        if field[y][x] == 0:
+            return f"No monster here"
+        
+        elif name != field[y][x]["name"]:
+            return f"No {name} here"
+        
+        elif field[y][x]["hp"] <= hit:
+            damag = field[y][x]["hp"]
+            field[y][x] = 0
+            return f"{name} 0 {damag}"
+        
+        else:
+            field[y][x]["hp"] -= hit
+            return f"{name} {field[y][x]['hp']} {hit}"
+        
     else:
-        return "<<<>>>"
+        return "smth happened write @donballon_b"
+
 
 def start_server():
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -60,8 +83,10 @@ def start_server():
                     exit()
                 response = handle_comm(data)
                 client_socket.send(response.encode())
+                
         except Exception as e:
             print(f"Ошибка::::: {e}")
+            
         finally:
             client_socket.close()
             print("<Клиент отключен.>")
