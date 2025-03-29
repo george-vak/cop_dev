@@ -1,0 +1,316 @@
+From 51581425080e0001ec1e4b262bb8dee6902c8915 Mon Sep 17 00:00:00 2001
+From: Vakulenko Georgy <g.vakulenko.s70@gmail.com>
+Date: Sun, 23 Mar 2025 18:35:10 +0300
+Subject: [PATCH 2/3] =?UTF-8?q?=D0=B4=D0=BE=D0=B1=D0=B0=D0=B2=D0=BB=D0=B5?=
+ =?UTF-8?q?=D0=BD=D0=B8=D0=B5=20=D0=B8=20=D0=BE=D1=82=D0=B2=D0=B5=D1=82?=
+ =?UTF-8?q?=D1=8B=20=D0=BA=D0=BB+=D1=81=D0=B5=D1=80=D0=B2?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ 20250317/1/client.py | 194 +++++++++++++++++++++++--------------------
+ 20250317/1/server.py |  32 +++++--
+ 2 files changed, 132 insertions(+), 94 deletions(-)
+
+diff --git a/20250317/1/client.py b/20250317/1/client.py
+index 1e082a0..8ac3a28 100644
+--- a/20250317/1/client.py
++++ b/20250317/1/client.py
+@@ -1,5 +1,7 @@
+ import cmd
+ from io import StringIO
++from math import trunc
++
+ import cowsay
+ import shlex
+ 
+@@ -17,20 +19,22 @@ class MUD(cmd.Cmd):
+         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+         self.client_socket.connect(('127.0.0.1', 12345))
+ 
+-        # self.jgsbat = cowsay.read_dot_cow(StringIO("""
+-        # $the_cow = <<EOC;
+-        #     ,_                    _,
+-        #     ) '-._  ,_    _,  _.-' (
+-        #     )  _.-'.|\\--//|.'-._  (
+-        #      )'   .'\\/o\\/o\\/'.   `(
+-        #       ) .' . \\====/ . '. (
+-        #        )  / <<    >> \\  (
+-        #         '-._/``  ``\\_.-'
+-        #   jgs     __\\'--'//__
+-        #          (((""`  `"")))
+-        # EOC
+-        # """))
+-        # self.allowed_list = cowsay.list_cows() + ["jgsbat"]
++        # self.allowed_list = ["cow"]
++
++        self.jgsbat = cowsay.read_dot_cow(StringIO("""
++        $the_cow = <<EOC;
++            ,_                    _,
++            ) '-._  ,_    _,  _.-' (
++            )  _.-'.|\\--//|.'-._  (
++             )'   .'\\/o\\/o\\/'.   `(
++              ) .' . \\====/ . '. (
++               )  / <<    >> \\  (
++                '-._/``  ``\\_.-'
++          jgs     __\\'--'//__
++                 (((""`  `"")))
++        EOC
++        """))
++        self.allowed_list = cowsay.list_cows() + ["jgsbat"]
+ 
+     # def encounter(self):
+     #     if self.field[self.y][self.x] == 0:
+@@ -44,38 +48,50 @@ class MUD(cmd.Cmd):
+     #         print(cowsay.cowsay(word, cowfile=self.jgsbat))
+     #     else:
+     #         print(cowsay.cowsay(word, cow=name))
+-
++    
++    def encounter(self, name, word):
++        if name == "jgsbat":
++            print(cowsay.cowsay(word, cowfile=self.jgsbat))
++        else:
++            print(cowsay.cowsay(word, cow=name))
++    
++    
+     def send_comm(self, comm):
+         self.client_socket.send(comm.encode())
+         ans = self.client_socket.recv(1024).decode()
+         return ans
+ 
+-
+-
+-
+     def do_up(self, arg):
+         answ = self.send_comm("move 0 -1")
+-        x, y = map(int, answ.split())
+-        print(f'Moved to ({x}, {y})')
+-
++        try:
++            x, y = map(int, answ.split())
++            print(f'Moved to ({x}, {y})')
++        except ValueError:
++            self.encounter(answ.split()[0], answ.split()[1])
++            
+     def do_down(self, arg):
+         answ = self.send_comm("move 0 1")
+-        x, y = map(int, answ.split())
+-        print(f'Moved to ({x}, {y})')
+-
+-
+-
++        try:
++            x, y = map(int, answ.split())
++            print(f'Moved to ({x}, {y})')
++        except ValueError:
++            self.encounter(answ.split()[0], answ.split()[1])
++            
+     def do_right(self, arg):
+         answ = self.send_comm("move 1 0")
+-        x, y = map(int, answ.split())
+-        print(f'Moved to ({x}, {y})')
+-
+-
++        try:
++            x, y = map(int, answ.split())
++            print(f'Moved to ({x}, {y})')
++        except ValueError:
++            self.encounter(answ.split()[0], answ.split()[1])
+ 
+     def do_left(self, arg):
+         answ = self.send_comm("move -1 0")
+-        x, y = map(int, answ.split())
+-        print(f'Moved to ({x}, {y})')
++        try:
++            x, y = map(int, answ.split())
++            print(f'Moved to ({x}, {y})')
++        except ValueError:
++            self.encounter(answ.split()[0], answ.split()[1])
+ 
+     def do_exit(self, arg):
+         self.client_socket.send(b"exit")
+@@ -83,63 +99,65 @@ class MUD(cmd.Cmd):
+         print("Disconnect.")
+         return True
+ 
++# addmon cow hp 93 hello SJSJSJS coords 0 1
++
++    def do_addmon(self, arg):
++        inp = shlex.split(arg)
++        if len(inp) != 8:
++            print("Invalid arguments <<кол-во>>")
++            return
++
++        curr_name = inp[0]
++        if curr_name not in self.allowed_list and curr_name != "jgsbat":
++            print("Cannot add unknown monster")
++            return
++
++        m_x, m_y, curr_hp = 0, 0, 0
++        curr_word = ""
++        ii = 1
++        while ii < 8:
++            match inp[ii]:
++                case "hello":
++                    curr_word = inp[ii+1]
++                    ii += 1
++
++                case "hp":
++                    try:
++                        curr_hp = int(inp[ii+1])
++                    except Exception:
++                        print("Invalid command")
++                        return
++                    if curr_hp < 1:
++                        print("Invalid command")
++                        return
++                    ii += 1
++
++                case "coords":
++                    try:
++                        m_x = int(inp[ii+1])
++                        m_y = int(inp[ii+2])
++                    except Exception:
++                        print("Invalid command")
++                        return
++                    if m_x < 0 or m_x > 9 or m_y < 0 or m_y > 9:
++                        print("Invalid command")
++                        return
++                    ii += 2
++
++
++            ii += 1
++
++        print(self.send_comm(f"add {curr_name} {m_x} {m_y} {curr_word} {curr_hp}"))
++
++
++
++        # if self.field[m_y][m_x] == 0:
++        #     print(f'Added monster {curr_name} to ({m_x}, {m_y}) saying {curr_word}')
++        # else:
++        #     print(f'Replaced the old monster')
++        #
++        # self.field[m_y][m_x] = {'name': curr_name, 'word': curr_word, 'hp': curr_hp}
+ 
+-
+-    # def do_addmon(self, arg):
+-    #     inp = shlex.split(arg)
+-    #     if len(inp) != 8:
+-    #         print("Invalid arguments <<кол-во>>")
+-    #         return
+-    #
+-    #     curr_name = inp[0]
+-    #     if curr_name not in self.allowed_list and curr_name != "jgsbat":
+-    #         print("Cannot add unknown monster")
+-    #         return
+-    #
+-    #     m_x, m_y, curr_hp = 0, 0, 0
+-    #     curr_word = ""
+-    #     ii = 1
+-    #     while ii < 8:
+-    #         # print(inp[ii])
+-    #         match inp[ii]:
+-    #             case "hello":
+-    #                 curr_word = inp[ii+1]
+-    #                 ii += 1
+-    #
+-    #             case "hp":
+-    #                 try:
+-    #                     curr_hp = int(inp[ii+1])
+-    #                 except Exception:
+-    #                     print("Invalid command")
+-    #                     return
+-    #                 if curr_hp < 1:
+-    #                     print("Invalid command")
+-    #                     return
+-    #                 ii += 1
+-    #
+-    #             case "coords":
+-    #                 try:
+-    #                     m_x = int(inp[ii+1])
+-    #                     m_y = int(inp[ii+2])
+-    #                 except Exception:
+-    #                     print("Invalid command")
+-    #                     return
+-    #                 if m_x < 0 or m_x > 9 or m_y < 0 or m_y > 9:
+-    #                     print("Invalid command")
+-    #                     return
+-    #                 ii += 2
+-    #
+-    #
+-    #         ii += 1
+-    #
+-    #
+-    #     if self.field[m_y][m_x] == 0:
+-    #         print(f'Added monster {curr_name} to ({m_x}, {m_y}) saying {curr_word}')
+-    #     else:
+-    #         print(f'Replaced the old monster')
+-    #
+-    #     self.field[m_y][m_x] = {'name': curr_name, 'word': curr_word, 'hp': curr_hp}
+-    #
+     # def do_attack(self, arg=""):
+     #     if self.field[self.y][self.x] == 0:
+     #         print(f"No monster here")
+diff --git a/20250317/1/server.py b/20250317/1/server.py
+index 710a3b7..aec5ab2 100644
+--- a/20250317/1/server.py
++++ b/20250317/1/server.py
+@@ -5,9 +5,11 @@ y = 0
+ field = [[0 for j in range(10)] for i in range(10)]
+ 
+ def handle_comm(comm):
+-    global x, y
+-    if comm.startswith("move"):
+-        parts = comm.split()
++    global x, y, field
++    parts = comm.split()
++
++    if parts[0] == "move":
++        # move x y
+         dx = int(parts[1])
+         dy = int(parts[2])
+         x = (x + dx) % 10
+@@ -16,9 +18,27 @@ def handle_comm(comm):
+         if field[y][x] == 0:
+             return f"{x} {y}"
+         else:
+-            return "aaaa"
++            name = field[y][x]['name']
++            word = field[y][x]['word']
++            return f"{name} {word}"
++
++    elif parts[0] == "add":
++        # add name x y word hp
++        curr_name = str(parts[1])
++        m_x = int(parts[2])
++        m_y = int(parts[3])
++        curr_word = str(parts[4])
++        curr_hp = int(parts[5])
++        if field[m_y][m_x] == 0:
++            field[m_y][m_x] = {'name': curr_name, 'word': curr_word, 'hp': curr_hp}
++            return f"Added monster {curr_name} to ({m_x}, {m_y}) saying {curr_word}"
++        else:
++            field[m_y][m_x] = {'name': curr_name, 'word': curr_word, 'hp': curr_hp}
++            return f"Replaced the old monster"
++
++
+     else:
+-        return "bbbb"
++        return "<<<>>>"
+ 
+ def start_server():
+     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+@@ -41,7 +61,7 @@ def start_server():
+                 response = handle_comm(data)
+                 client_socket.send(response.encode())
+         except Exception as e:
+-            print(f"Ошибка {e}")
++            print(f"Ошибка::::: {e}")
+         finally:
+             client_socket.close()
+             print("<Клиент отключен.>")
+-- 
+2.39.5 (Apple Git-154)
+
