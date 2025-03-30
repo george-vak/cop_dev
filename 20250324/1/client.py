@@ -18,25 +18,31 @@ class MUDClient:
         self.message_queue = Queue()
         self.input_active = False
 
-        # self.jgsbat = cowsay.read_dot_cow(StringIO("""
-        # $the_cow = <<EOC;
-        #     ,_                    _,
-        #     ) '-._  ,_    _,  _.-' (
-        #     )  _.-'.|\\--//|.'-._  (
-        #      )'   .'\\/o\\/o\\/'.   `(
-        #       ) .' . \\====/ . '. (
-        #        )  / <<    >> \\  (
-        #         '-._/``  ``\\_.-'
-        #   jgs     __\\'--'//__
-        #          (((""`  `"")))
-        # EOC
-        # """))
-        self.allowed_list = ["www", "tux"]#cowsay.list_cows() + ["jgsbat"]
+        self.jgsbat = cowsay.read_dot_cow(StringIO("""
+        $the_cow = <<EOC;
+            ,_                    _,
+            ) '-._  ,_    _,  _.-' (
+            )  _.-'.|\\--//|.'-._  (
+             )'   .'\\/o\\/o\\/'.   `(
+              ) .' . \\====/ . '. (
+               )  / <<    >> \\  (
+                '-._/``  ``\\_.-'
+          jgs     __\\'--'//__
+                 (((""`  `"")))
+        EOC
+        """))
+        self.allowed_list = cowsay.list_cows() + ["jgsbat"]
         self.arsenal = {"sword": 10, "spear": 15, "axe": 20}
 
         readline.set_completer(self.complete)
         readline.parse_and_bind("tab: complete")
         readline.set_completer_delims(" \t\n")
+
+    def encounter(self, name, word):
+        if name == "jgsbat":
+            print(cowsay.cowsay(word, cowfile=self.jgsbat))
+        else:
+            print(cowsay.cowsay(word, cow=name))
 
     def complete(self, text, state):
         line = readline.get_line_buffer()
@@ -78,7 +84,7 @@ class MUDClient:
     def send_command(self, cmd):
         if self.socket:
             try:
-                self.socket.send(cmd.encode('utf-8'))
+                self.socket.send(f"{cmd}\n".encode())
                 return True
             except:
                 return False
@@ -114,11 +120,15 @@ class MUDClient:
                 current_input = readline.get_line_buffer()
                 sys.stdout.write("\r" + " " * (len(current_input) + 50) + "\r")
                 '''обработать встречу с монстром - отрисовка'''
-                print(f"\r{message}")
+                if message.split()[1] == "_meet":
+                    self.encounter(message.split()[2], message.split()[3])
+                else: print(f"\r{message}")
                 sys.stdout.write(f"\r{self.username}> {current_input}")
                 sys.stdout.flush()
             else:
-                print(f"\r{message}")
+                if message.split()[1] == "_meet":
+                    self.encounter(message.split()[2], message.split()[3])
+                else: print(f"\r{message}")
                 sys.stdout.write(f"\r{self.username}> ")
                 sys.stdout.flush()
 
@@ -160,6 +170,7 @@ class MUDClient:
             return
 
     def handle_addmon(self, args):
+        '''обработать строку привет в кавычках'''
         if len(args) != 8:
             self._print_error("Invalid arguments <<кол-во>>")
             return
@@ -213,7 +224,7 @@ class MUDClient:
                 self._print_error("Unknown weapon")
                 return
 
-        self.send_command(f"attack {args[0]} {self.arsenal[weapon]}")
+        self.send_command(f"attack {args[0]} {weapon}") #self.arsenal[weapon]
 
     def connect(self):
         try:
