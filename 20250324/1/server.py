@@ -16,7 +16,7 @@ def handle_comm(comm):
         y = (y + dy) % 10
 
         if field[y][x] == 0:
-            return f"{x} {y}"
+            return f"Moved to {x} {y}"
         else:
             name = field[y][x]['name']
             word = field[y][x]['word']
