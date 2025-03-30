@@ -65,8 +65,9 @@ class MUDChatServer:
             curr_name = str(parts[1])
             m_x = int(parts[2])
             m_y = int(parts[3])
-            curr_word = str(parts[4])
-            curr_hp = int(parts[5])
+            curr_word = ' '.join(parts[4:-1])
+            curr_hp = int(parts[-1])
+            print(f"slovo - {curr_word}\n{parts[-2]}")
 
             if field[m_y][m_x] == 0:
                 field[m_y][m_x] = {'name': curr_name, 'word': curr_word, 'hp': curr_hp}

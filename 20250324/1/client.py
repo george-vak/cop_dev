@@ -110,7 +110,6 @@ class MUDClient:
             sys.stdout.flush()
         else:
             print(f"\r{message}")
-            # print(f"{self.username}> ", end='', flush=True)
 
     def display_server_message(self):
         while not self.message_queue.empty():
@@ -121,13 +120,17 @@ class MUDClient:
                 sys.stdout.write("\r" + " " * (len(current_input) + 50) + "\r")
                 '''обработать встречу с монстром - отрисовка'''
                 if message.split()[1] == "_meet":
-                    self.encounter(message.split()[2], message.split()[3])
+                    slovo = " ".join(message.split()[3:])
+                    name = message.split()[2]
+                    self.encounter(name, slovo)
                 else: print(f"\r{message}")
                 sys.stdout.write(f"\r{self.username}> {current_input}")
                 sys.stdout.flush()
             else:
                 if message.split()[1] == "_meet":
-                    self.encounter(message.split()[2], message.split()[3])
+                    slovo = " ".join(message.split()[3:])
+                    name = message.split()[2]
+                    self.encounter(name, slovo)
                 else: print(f"\r{message}")
                 sys.stdout.write(f"\r{self.username}> ")
                 sys.stdout.flush()
@@ -160,8 +163,8 @@ class MUDClient:
             help_text = """
             Доступные команды:
             - up/down/left/right
-            - addmon www hello <message> hp 34 coords 0 1
-            - attack <monster> [with <weapon>]
+            - addmon www hello "privet mess" hp 34 coords 0 1
+            - attack www [with axe]
             - exit
             """
             print(help_text)
@@ -170,7 +173,6 @@ class MUDClient:
             return
 
     def handle_addmon(self, args):
-        '''обработать строку привет в кавычках'''
         if len(args) != 8:
             self._print_error("Invalid arguments <<кол-во>>")
             return
