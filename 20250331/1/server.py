@@ -69,12 +69,12 @@ class MUDChatServer:
             curr_hp = int(parts[-1])
 
             if field[m_y][m_x] == 0:
-                with self.lock: field[m_y][m_x] = {'name': curr_name, 'word': curr_word, 'hp': curr_hp}
+                field[m_y][m_x] = {'name': curr_name, 'word': curr_word, 'hp': curr_hp}
                 mess = f"Added monster {curr_name} to ({m_x}, {m_y}) saying {curr_word}"
                 self.broadcast(f"[bcast] {username} added {curr_name} with {curr_hp} hp", exclude_username=username)
                 return f"[Сервер] {mess}"
             else:
-                with self.lock: field[m_y][m_x] = {'name': curr_name, 'word': curr_word, 'hp': curr_hp}
+                field[m_y][m_x] = {'name': curr_name, 'word': curr_word, 'hp': curr_hp}
                 mess = f"Replaced the old monster"
                 self.broadcast(f"[bcast] {username} replaced old monst on {curr_name} with {curr_hp} hp", exclude_username=username)
                 return f"[Сервер] {mess}"
@@ -94,12 +94,12 @@ class MUDChatServer:
 
             elif field[y][x]["hp"] <= hit:
                 damag = field[y][x]["hp"]
-                with self.lock: field[y][x] = 0
+                field[y][x] = 0
                 self.broadcast(f"[bcast] {username} killed {name} by {weapon} ({damag} hp)", exclude_username=username)
                 return f"[Сервер] u killed {name} by {weapon} ({damag} hp)"
 
             else:
-                with self.lock: field[y][x]["hp"] -= hit
+                field[y][x]["hp"] -= hit
                 self.broadcast(f"[bcast] {username} attacked {name} by {weapon}, now it has {field[y][x]['hp']} hp", exclude_username=username)
                 return f"[Сервер] u hit {name} {hit} hp by {weapon} and now it has {field[y][x]['hp']} hp"
 
