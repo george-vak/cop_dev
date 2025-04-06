@@ -1,3 +1,5 @@
+"""Client process main file."""
+
 import threading
 import time
 
@@ -9,7 +11,15 @@ from .config import get_allowed_monsters, ARSENAL
 
 
 class MUDClient:
-    def __init__(self, username, host='127.0.0.1', port=5555):
+    """Cl class."""
+
+    def __init__(self, username, host="127.0.0.1", port=5555):
+        """Necessary configs.
+
+        :param username:
+        :param host: default 127.0.0.1
+        :param port: 5555.
+        """
         self.username = username
         self.ui = UIManager(username)
         self.network = NetwManager(host, port)
@@ -17,11 +27,25 @@ class MUDClient:
         self.handler = CommandHandler(self.network, self.ui)
         self.running = True
         self.input_active = False
-        self.allowed_commands = ["up", "down", "left", "right", "addmon", "attack", "exit", "help", "sayall"]
+        self.allowed_commands = [
+            "up",
+            "down",
+            "left",
+            "right",
+            "addmon",
+            "attack",
+            "exit",
+            "help",
+            "sayall",
+        ]
         self.allowed_list = get_allowed_monsters()
         self.arsenal = ARSENAL
 
     def check_quee(self):
+        """Queue loop checker.
+
+        :return: 0.
+        """
         while True:
             msg = self.network.message_queue.get()
             if msg:
@@ -29,16 +53,22 @@ class MUDClient:
             time.sleep(0.1)
 
     def connect(self):
+        """Allocating thread to a client.
+
+        :return: 0.
+        """
         try:
             if not self.network.connect(self.username):
                 return
 
-            print(self.network.socket.recv(1024).decode('utf-8'))
+            print(self.network.socket.recv(1024).decode("utf-8"))
 
-            threading.Thread(target=self.network.recv_message, daemon=True).start()
+            threading.Thread(
+                target=self.network.recv_message,
+                daemon=True
+            ).start()
 
             threading.Thread(target=self.check_quee, daemon=True).start()
-
 
             while self.running:
                 try:

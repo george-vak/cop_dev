@@ -1,14 +1,30 @@
+"""Controlling commands file."""
+
 import shlex
+
 from .config import ARSENAL, get_allowed_monsters
 
+
 class CommandHandler:
+    """Controlling commands class."""
+
     def __init__(self, network, ui):
+        """Necessary configs.
+
+        :param network:
+        :param ui: units.
+        """
         self.network = network
         self.ui = ui
         self.allowed_list = get_allowed_monsters()
         self.arsenal = ARSENAL
 
     def handle_command(self, cmd):
+        """General loop.
+
+        :param cmd:
+        :return: 0.
+        """
         if not cmd:
             return True
 
@@ -38,8 +54,8 @@ class CommandHandler:
             - up/down/left/right
             - addmon www hello "privet mess" hp 34 coords 0 1
             - attack www [with axe]
-            - sayall "bcast message" 
-            - exit 
+            - sayall "bcast message"
+            - exit
             """
             print(help_text)
         elif comm == "sayall":
@@ -52,6 +68,11 @@ class CommandHandler:
         return True
 
     def handle_addmon(self, args):
+        """Addmon handle.
+
+        :param args:
+        :return: 0.
+        """
         if len(args) != 8:
             self.ui._print_error("Invalid arguments <<кол-во>>")
             return
@@ -90,9 +111,16 @@ class CommandHandler:
                     ii += 2
             ii += 1
 
-        self.network.send_command(f"addmon {curr_name} {m_x} {m_y} {curr_word} {curr_hp}")
+        self.network.send_command(
+            f"addmon {curr_name} {m_x} {m_y} {curr_word} {curr_hp}"
+        )
 
     def handle_attack(self, args):
+        """Attack handle.
+
+        :param args:
+        :return: 0.
+        """
         if not args:
             self.ui._print_error("Укажите имя монстра для атаки")
             return

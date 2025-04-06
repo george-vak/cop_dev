@@ -1,4 +1,7 @@
+"""File launcher."""
+
 import sys
+
 from .client import MUDClient
 
 if __name__ == "__main__":
