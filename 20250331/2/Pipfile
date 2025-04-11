@@ -4,10 +4,9 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-<<<<<<< HEAD
-sphinx = "*"
-=======
->>>>>>> work
+python-cowsay = "*"
+black = "*"
+isort = "*"
 
 [dev-packages]
 
