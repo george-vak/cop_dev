@@ -1,9 +1,9 @@
 """Network server file."""
 
-import socket
+import asyncio
 import threading
 from queue import Queue
-from time import sleep
+from typing import Dict
 
 from .handlers import CommandHandler
 
@@ -18,72 +18,115 @@ class MUDChatServer:
             host (str) server IP address, default '0.0.0.0'.
             port (int) server port number, default 5555.
         """
-        self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.server.bind((host, port))
-        self.server.listen()
-        self.clients = {}
+        self.host = host
+        self.port = port
+        self.server = None
+        self.clients: Dict[str, Dict] = {}
         self.command_queue = Queue()
         self.lock = threading.Lock()
         self.running = False
         self.handler = CommandHandler(self)
-        print(f"Сервер запущен на {host}:{port}")
+        self.async_loop = None
 
-    def broadcast(self, message, exclude_username=None):
+    async def broadcast(self, message, exclude_username=None):
         """Broadcasting.
 
         :param message: mess
         :param exclude_username: initiator, default None.
         """
-        with self.lock:
-            for name, data in list(self.clients.items()):
-                if name != exclude_username:
-                    try:
-                        threading.Thread(
-                            target=data["socket"].send,
-                            args=(message.encode(),)
-                        ).start()
-                    except Exception:
-                        self.remove_client(name)
+        async with asyncio.Lock():
+            tasks = []
+            for username, data in list(self.clients.items()):
+                if username != exclude_username:
+                    tasks.append(self._safe_send(data["writer"], message))
+            if tasks:
+                await asyncio.gather(*tasks, return_exceptions=True)
 
-    def remove_client(self, username):
+    async def _safe_send(self, writer, message):
+        """Solo send func
+
+        :param writer:
+        :param message:
+        :return: 0.
+        """
+        try:
+            writer.write(message.encode())
+            await writer.drain()
+        except Exception:
+            pass
+
+    def start(self):
+        """Start function 2 threads.
+
+        :return: 0.
+        """
+        self.running = True
+
+        self.async_loop = asyncio.new_event_loop()
+        threading.Thread(
+            target=self._run_async_loop,
+            name="AsyncLoopThread",
+            daemon=True
+        ).start()
+
+        print("[DEBUG] Создание потока обработки команд...")
+        self.command_thread = threading.Thread(
+            target=self._process_commands_loop,
+            name="CommandProcessorThread",
+            daemon=True,
+        )
+        self.command_thread.start()
+
+        asyncio.run_coroutine_threadsafe(
+            self._run_async_server(),
+            self.async_loop
+        )
+
+    async def remove_client(self, username):
         """Disconnect user function.
 
         :param username: whom to disconnect.
         """
         if username in self.clients:
-            self.clients[username]["socket"].close()
-            self.broadcast(
-                f"[bcast] {username} покинул игру", exclude_username=username
+            writer = self.clients[username]["writer"]
+            try:
+                writer.close()
+                await writer.wait_closed()
+            except Exception:
+                pass
+
+            await self.broadcast(
+                f"[bcast] {username} покинул игру",
+                exclude_username=username
             )
             del self.clients[username]
             print(f"{username} покинул сервер")
 
-    def handle_client(self, client):
+    async def handle_client(self, reader, writer):
         """General handling func.
 
         :param client: processing client.
         """
         username = None
         try:
-            username = client.recv(1024).decode().strip()
+            username = (await reader.read(1024)).decode().strip()
 
             if username in self.clients:
-                client.send(f"ERROR: имя {username} занято. "
-                            f"переподключитесь".encode()
-                            )
-                client.close()
+                writer.write(f"ERROR: имя {username} занято. "
+                             f"переподключитесь".encode()
+                             )
+                await writer.drain()
+                writer.close()
                 return
 
-            with self.lock:
-                self.clients[username] = {"socket": client, "x": 0, "y": 0}
+            self.clients[username] = {"writer": writer, "x": 0, "y": 0}
 
-            welcome_msg = (f"[Сервер] Добро пожаловать, "
-                           f"{username}! Ваша позиция: (0, 0)"
-                           )
-            client.send(welcome_msg.encode())
+            welcome_msg = (f"[Сервер] Добро пожаловать, {username}! "
+                           f"Ваша позиция: (0, 0)")
+            writer.write(welcome_msg.encode())
+            await writer.drain()
 
-            self.broadcast(
+            await self.broadcast(
                 f"[bcast] {username} присоединился к игре!",
                 exclude_username=username
             )
@@ -91,68 +134,70 @@ class MUDChatServer:
 
             buffer = ""
             while self.running:
-                data = client.recv(1024).decode()
+                data = await reader.read(1024)
                 if not data:
                     break
 
-                print(f"{username} команда: {data}")
-                buffer += data
+                data_str = data.decode()
+                print(f"{username} команда: {data_str}")
+                buffer += data_str
                 while "\n" in buffer:
                     command, buffer = buffer.split("\n", 1)
-                    self.command_queue.put((client, username, command.strip()))
+                    self.command_queue.put((writer, username, command.strip()))
 
         except Exception as e:
             print(f"Ошибка с клиентом {username}: {str(e)}")
+        finally:
             if username:
-                self.remove_client(username)
+                await self.remove_client(username)
 
-    def process_commands(self):
+    def _process_commands_loop(self):
         """Process commands loop.
 
         :return:
         """
         while self.running:
-            client, username, command = self.command_queue.get()
+            try:
+                writer, username, command = self.command_queue.get()
 
-            if command == "exit":
-                self.remove_client(username)
-
-            else:
-
-                with self.lock:
-                    sleep(1)
-                    person_mess, cast_mess = self.handler.handle_comm(
-                        command, username
+                if command == "exit":
+                    asyncio.run_coroutine_threadsafe(
+                        self.remove_client(username),
+                        self.async_loop
                     )
+                else:
+                    with self.lock:
+                        person_mess, cast_mess = self.handler.handle_comm(
+                            command, username
+                        )
 
-                if person_mess:
-                    threading.Thread(
-                        target=client.send, args=(f"{person_mess}".encode(),)
-                    ).start()
-                if cast_mess:
-                    self.broadcast(cast_mess, exclude_username=username)
+                    if person_mess:
+                        asyncio.run_coroutine_threadsafe(
+                            self._safe_send(writer, person_mess),
+                            self.async_loop
+                        )
+                    if cast_mess:
+                        asyncio.run_coroutine_threadsafe(
+                            self.broadcast(
+                                cast_mess,
+                                exclude_username=username
+                            ),
+                            self.async_loop,
+                        )
 
-    def run(self):
-        """Run loop.
+            except Exception as e:
+                print(f"[ERROR] Ошибка обработки команды: {str(e)}")
 
-        :return:
-        """
+    def _run_async_loop(self):
+        asyncio.set_event_loop(self.async_loop)
+        self.async_loop.run_forever()
+
+    async def _run_async_server(self):
+        self.server = await asyncio.start_server(
+            self.handle_client, self.host, self.port
+        )
         self.running = True
-        threading.Thread(target=self.process_commands, daemon=True).start()
-
-        try:
-            while self.running:
-                client, addr = self.server.accept()
-                print(f"Подключен: {addr}")
-                threading.Thread(
-                    target=self.handle_client,
-                    args=(client,)
-                ).start()
-        except Exception:
-            print("\nСервер завершает работу...")
-            exit(1)
-        finally:
-            self.shutdown()
+        print(f"Сервер запущен на {self.host}:{self.port}")
 
     def shutdown(self):
         """Off server func.
@@ -160,8 +205,21 @@ class MUDChatServer:
         :return:
         """
         self.running = False
-        self.broadcast("[bcast] Сервер завершает работу. Отключение...\n")
-        for username in list(self.clients.keys()):
-            self.remove_client(username)
-        self.server.close()
+        future = asyncio.run_coroutine_threadsafe(
+            self._async_shutdown(), self.async_loop
+        )
+        future.result()
         print("Сервер остановлен")
+
+    async def _async_shutdown(self):
+        """Off server func.
+
+        :return:
+        """
+        await self.broadcast("[bcast] Сервер завершает работу. "
+                             "Отключение...\n")
+        for username in list(self.clients.keys()):
+            await self.remove_client(username)
+        self.server.close()
+        await self.server.wait_closed()
+        self.async_loop.stop()

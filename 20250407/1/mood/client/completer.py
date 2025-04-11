@@ -32,10 +32,10 @@ class CommandCompleter:
         elif line.startswith("addmon"):
             return self.complete_addmon(text, line, begidx, endidx)[state]
         else:
-            return ([cmd for cmd
-                     in ALLOWED_COMMANDS
-                     if cmd.startswith(text)][state]
-                    )
+            return [
+                cmd for cmd in ALLOWED_COMMANDS
+                if cmd.startswith(text)
+            ][state]
 
     def complete_attack(self, text, line, begidx, endidx):
         """Complete for attack comm.
@@ -50,10 +50,10 @@ class CommandCompleter:
         if len(words) == 1:
             return self.allowed_list
         elif len(words) == 2:
-            return ([mons for mons
-                     in self.allowed_list
-                     if mons.startswith(text)]
-                    )
+            return [
+                mons for mons in self.allowed_list
+                if mons.startswith(text)
+            ]
         elif len(words) == 3 and words[2] == "with":
             return list(ARSENAL.keys())
         elif len(words) == 4 and words[2] == "with":
@@ -73,7 +73,7 @@ class CommandCompleter:
         if len(words) == 1:
             return self.allowed_list
         elif len(words) == 2:
-            return ([mons for mons
-                     in self.allowed_list
-                     if mons.startswith(text)]
-                    )
+            return [
+                mons for mons in self.allowed_list
+                if mons.startswith(text)
+            ]
