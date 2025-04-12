@@ -9,5 +9,5 @@
 *$py.class
 
 # Sphinx
-**/docs/_build/
-**/docs/_autosummary/
+**/docs/build/
+**/build/
