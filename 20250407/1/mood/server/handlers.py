@@ -1,4 +1,6 @@
 """Commands handle file."""
+import random
+
 
 class CommandHandler:
     """All commands handle class, no more."""
@@ -25,14 +27,11 @@ class CommandHandler:
             tuple: (personal_message, broadcast_message)
         """
         parts = comm.split()
-        # print("=====")
-        # print(parts)
-        # print("=====")
 
         if parts[0] == "CHECK":
-            # def move monster
+            s = self.general_move()
             print(self.monsters)
-            return "monster moved", "<where>"
+            return "check meet with player", f"{s[0]} moved one cell {s[1]}"
 
         client_data = self.server.clients[username]
         x, y = client_data["x"], client_data["y"]
@@ -89,7 +88,6 @@ class CommandHandler:
                 )
             self.add_monster(m_x, m_y, curr_name, curr_hp, curr_word)
             return person, broadcast
-
 
         elif parts[0] == "attack":
             name = str(parts[1])
@@ -165,5 +163,56 @@ class CommandHandler:
         :return: 0.
         """
         del self.monsters[(x, y)]
-        # print(f"deleted mons from ({x, y})")
         return
+
+    def general_move(self):
+        if not self.monsters:
+            print("нет монстров")
+            return None
+
+        att = 0
+        max_att = 100
+
+        while att <= max_att:
+            mons_c, side = self.choose()
+            s = self.mons_move(mons_c, side)
+            if s:
+                self.field[s[3]][s[2]] = self.field[s[1]][s[0]]
+                self.field[s[1]][s[0]] = 0
+                moved_name = self.monsters[(s[2], s[3])]["name"]
+                match side:
+                    case (1, 0):
+                        direction = "right"
+                    case (-1, 0):
+                        direction = "left"
+                    case (0, -1):
+                        direction = "down"
+                    case (0, 1):
+                        direction = "up"
+
+                return moved_name, direction
+            else:
+                att += 1
+
+        return None
+
+    def choose(self):
+        cords, monster_data = random.choice(list(self.monsters.items()))
+        side = random.choice([
+        (0, 1),
+        (1, 0),
+        (0, -1),
+        (-1, 0)
+        ])
+        return cords, side
+
+    def mons_move(self, cords, side):
+        x, y = cords
+        nx, ny = (x + side[0]) % 10, (y + side[1]) % 10
+
+        if (nx, ny) in self.monsters:
+            return False
+        else:
+            self.monsters[(nx, ny)] = self.monsters.pop((x, y))
+            # print(f"mons {cords} -> {nx, ny}")
+            return [cords[0], cords[1], nx, ny]

@@ -29,7 +29,7 @@ class MUDChatServer:
         self.async_loop = None
 
         self.periodic_run = True
-        self.periodic_interval = 10
+        self.periodic_interval = 20
         self.periodic_command = "CHECK"
 
     async def _periodic_worker(self):
