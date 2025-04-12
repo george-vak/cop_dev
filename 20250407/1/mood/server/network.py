@@ -28,6 +28,29 @@ class MUDChatServer:
         self.handler = CommandHandler(self)
         self.async_loop = None
 
+        self.periodic_run = True
+        self.periodic_interval = 10
+        self.periodic_command = "CHECK"
+
+    async def _periodic_worker(self):
+        """Loop for periodic comm"""
+        while self.periodic_run:
+            await asyncio.sleep(self.periodic_interval)
+            if self.periodic_run:
+                self.command_queue.put(("SYSTEM", "PERIODIC", self.periodic_command))
+                # print("====")
+                # print(self.clients)
+                # print("====")
+
+    def toggle_periodic(self, enable: bool):
+        """Turner for periodic"""
+        self.periodic_run = enable
+        if enable:
+            asyncio.create_task(self._periodic_worker())
+            print("[Periodic] Периодические команды включены")
+        else:
+            print("[Periodic] Периодические команды выключены")
+
     async def broadcast(self, message, exclude_username=None):
         """Broadcasting.
 
@@ -69,7 +92,6 @@ class MUDChatServer:
             daemon=True
         ).start()
 
-        print("[DEBUG] Создание потока обработки команд...")
         self.command_thread = threading.Thread(
             target=self._process_commands_loop,
             name="CommandProcessorThread",
@@ -170,6 +192,7 @@ class MUDChatServer:
                         person_mess, cast_mess = self.handler.handle_comm(
                             command, username
                         )
+                    print(person_mess, cast_mess)
 
                     if person_mess:
                         asyncio.run_coroutine_threadsafe(
@@ -198,6 +221,10 @@ class MUDChatServer:
         )
         self.running = True
         print(f"Сервер запущен на {self.host}:{self.port}")
+
+        if self.periodic_run:
+            self._periodic_task = asyncio.create_task(self._periodic_worker())
+            print(f"[Periodic] Автозапуск команд каждые {self.periodic_interval} сек")
 
     def shutdown(self):
         """Off server func.

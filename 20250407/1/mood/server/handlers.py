@@ -1,6 +1,5 @@
 """Commands handle file."""
 
-
 class CommandHandler:
     """All commands handle class, no more."""
 
@@ -13,6 +12,7 @@ class CommandHandler:
         self.server = server
         self.field = [[0 for _ in range(10)] for _ in range(10)]
         self.arsenal = {"sword": 10, "spear": 15, "axe": 20}
+        self.monsters = {}
 
     def handle_comm(self, comm, username):
         """Process incoming game command.
@@ -25,6 +25,15 @@ class CommandHandler:
             tuple: (personal_message, broadcast_message)
         """
         parts = comm.split()
+        # print("=====")
+        # print(parts)
+        # print("=====")
+
+        if parts[0] == "CHECK":
+            # def move monster
+            print(self.monsters)
+            return "monster moved", "<where>"
+
         client_data = self.server.clients[username]
         x, y = client_data["x"], client_data["y"]
 
@@ -66,19 +75,21 @@ class CommandHandler:
                     f"{curr_name} with {curr_hp} hp"
                 )
 
-                return person, broadcast
             else:
                 self.field[m_y][m_x] = {
                     "name": curr_name,
                     "word": curr_word,
                     "hp": curr_hp,
                 }
+
                 person = "[Сервер] Replaced the old monster"
                 broadcast = (
                     f"[bcast] {username} replaced old monst "
                     f"on {curr_name} with {curr_hp} hp"
                 )
-                return person, broadcast
+            self.add_monster(m_x, m_y, curr_name, curr_hp, curr_word)
+            return person, broadcast
+
 
         elif parts[0] == "attack":
             name = str(parts[1])
@@ -96,6 +107,7 @@ class CommandHandler:
             elif self.field[y][x]["hp"] <= hit:
                 damag = self.field[y][x]["hp"]
                 self.field[y][x] = 0
+                self.del_monster(x, y)
                 person = f"[Сервер] u killed {name} by {weapon} ({damag} hp)"
                 broadcast = (
                     f"[bcast] {username} killed "
@@ -105,6 +117,7 @@ class CommandHandler:
 
             else:
                 self.field[y][x]["hp"] -= hit
+                self.monsters[(x, y)]["hp"] -= hit
                 person = (
                     f"[Сервер] u hit {name} {hit} hp "
                     f"by {weapon} and now it has "
@@ -124,3 +137,33 @@ class CommandHandler:
             person = None
             broadcast = f"[bcast] {username}: {' '.join(parts[1:])}"
             return person, broadcast
+
+    def add_monster(self, x, y, name, hp, word):
+        """Add monster to dict.
+
+        :param x:
+        :param y:
+        :param name:
+        :param hp:
+        :param word:
+        :return: 0.
+        """
+        self.monsters[(x, y)] = {
+            "name": name,
+            "hp": hp,
+            "word": word,
+
+        }
+        # print(f"added {name} to ({x}, {y})")
+        return
+
+    def del_monster(self, x, y):
+        """Delete monster from dict.
+
+        :param x:
+        :param y:
+        :return: 0.
+        """
+        del self.monsters[(x, y)]
+        # print(f"deleted mons from ({x, y})")
+        return
