@@ -29,7 +29,7 @@ class MUDChatServer:
         self.async_loop = None
 
         self.periodic_run = True
-        self.periodic_interval = 20
+        self.periodic_interval = 10
         self.periodic_command = "CHECK"
 
     async def _periodic_worker(self):
@@ -38,9 +38,6 @@ class MUDChatServer:
             await asyncio.sleep(self.periodic_interval)
             if self.periodic_run:
                 self.command_queue.put(("SYSTEM", "PERIODIC", self.periodic_command))
-                # print("====")
-                # print(self.clients)
-                # print("====")
 
     def toggle_periodic(self, enable: bool):
         """Turner for periodic"""
@@ -181,32 +178,54 @@ class MUDChatServer:
         while self.running:
             try:
                 writer, username, command = self.command_queue.get()
-
-                if command == "exit":
-                    asyncio.run_coroutine_threadsafe(
-                        self.remove_client(username),
-                        self.async_loop
-                    )
-                else:
+                if writer == "SYSTEM":
                     with self.lock:
-                        person_mess, cast_mess = self.handler.handle_comm(
-                            command, username
-                        )
-                    print(person_mess, cast_mess)
+                        res = self.handler.general_move()
 
-                    if person_mess:
+                    if res is not None:
+                        x, y, person_mess, cast_mess = res
+
+                        print(x, y, person_mess, cast_mess)
+
+                        for client in self.clients.values():
+                            writer = client["writer"]
+                            if client["x"] == x and client["y"] == y and person_mess:
+                                asyncio.run_coroutine_threadsafe(
+                                    self._safe_send(writer, person_mess),
+                                    self.async_loop
+                                )
+                            elif cast_mess:
+                                asyncio.run_coroutine_threadsafe(
+                                    self._safe_send(writer, cast_mess),
+                                    self.async_loop
+                                )
+
+                else:
+                    if command == "exit":
                         asyncio.run_coroutine_threadsafe(
-                            self._safe_send(writer, person_mess),
+                            self.remove_client(username),
                             self.async_loop
                         )
-                    if cast_mess:
-                        asyncio.run_coroutine_threadsafe(
-                            self.broadcast(
-                                cast_mess,
-                                exclude_username=username
-                            ),
-                            self.async_loop,
-                        )
+                    else:
+                        with self.lock:
+                            person_mess, cast_mess = self.handler.handle_comm(
+                                command, username
+                            )
+                        print(person_mess, cast_mess)
+
+                        if person_mess:
+                            asyncio.run_coroutine_threadsafe(
+                                self._safe_send(writer, person_mess),
+                                self.async_loop
+                            )
+                        if cast_mess:
+                            asyncio.run_coroutine_threadsafe(
+                                self.broadcast(
+                                    cast_mess,
+                                    exclude_username=username
+                                ),
+                                self.async_loop,
+                            )
 
             except Exception as e:
                 print(f"[ERROR] Ошибка обработки команды: {str(e)}")

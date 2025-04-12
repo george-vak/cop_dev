@@ -27,12 +27,6 @@ class CommandHandler:
             tuple: (personal_message, broadcast_message)
         """
         parts = comm.split()
-
-        if parts[0] == "CHECK":
-            s = self.general_move()
-            print(self.monsters)
-            return "check meet with player", f"{s[0]} moved one cell {s[1]}"
-
         client_data = self.server.clients[username]
         x, y = client_data["x"], client_data["y"]
 
@@ -168,7 +162,7 @@ class CommandHandler:
     def general_move(self):
         if not self.monsters:
             print("нет монстров")
-            return None
+            return
 
         att = 0
         max_att = 100
@@ -185,16 +179,20 @@ class CommandHandler:
                         direction = "right"
                     case (-1, 0):
                         direction = "left"
-                    case (0, -1):
-                        direction = "down"
                     case (0, 1):
+                        direction = "down"
+                    case (0, -1):
                         direction = "up"
 
-                return moved_name, direction
+                word = self.monsters[(s[2], s[3])]["word"]
+                person = f"[Сервер] _meet {moved_name} {word}"
+                cast = f"{moved_name} moved one cell {direction}"
+
+                return s[2], s[3], person, cast
             else:
                 att += 1
 
-        return None
+        return
 
     def choose(self):
         cords, monster_data = random.choice(list(self.monsters.items()))
