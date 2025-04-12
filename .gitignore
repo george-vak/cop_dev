@@ -8,4 +8,6 @@
 *.py[cod]
 *$py.class
 
-docs/_build/
+# Sphinx
+**/docs/_build/
+**/docs/_autosummary/
