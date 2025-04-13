@@ -168,7 +168,11 @@ class MUDChatServer:
             print(f"Ошибка с клиентом {username}: {str(e)}")
         finally:
             if username:
-                await self.remove_client(username)
+                if username and username in self.clients:
+                    if not writer.is_closing():
+                        writer.close()
+                        await writer.wait_closed()
+                    del self.clients[username]
 
     def _process_commands_loop(self):
         """Process commands loop.

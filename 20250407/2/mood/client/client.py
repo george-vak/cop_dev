@@ -2,6 +2,7 @@
 
 import threading
 import time
+from pathlib import Path
 
 from .network import NetwManager
 from .commands import CommandHandler
@@ -52,7 +53,7 @@ class MUDClient:
                 self.ui.display_server_message(msg)
             time.sleep(0.1)
 
-    def connect(self):
+    def connect(self, comm_file = None):
         """Allocating thread to a client.
 
         :return: 0.
@@ -68,19 +69,41 @@ class MUDClient:
                 daemon=True
             ).start()
 
-            threading.Thread(target=self.check_quee, daemon=True).start()
+            threading.Thread(
+                target=self.check_quee,
+                daemon=True
+            ).start()
 
-            while self.running:
+            if comm_file:
                 try:
-                    self.input_active = True
-                    cmd = input(f"{self.username}> ")
-                    self.input_active = False
+                    with open(comm_file, 'r') as f:
+                        commands = [line.strip() for line in f if line.strip()]
+                        for cmd in commands:
+                            if not self.running:
+                                break
 
-                    if not self.handler.handle_command(cmd):
-                        self.running = False
+                            print(f"{cmd}", end='\r\n')
+                            if not self.handler.handle_command(cmd):
+                                self.running = False
+                            time.sleep(1.0)
+                except FileNotFoundError:
+                    print(f"Файл не найден: {comm_file}")
+                    return
+                finally:
+                    self.running = False
 
-                except KeyboardInterrupt:
-                    break
+            else:
+                while self.running:
+                    try:
+                        self.input_active = True
+                        cmd = input(f"{self.username}> ")
+                        self.input_active = False
+
+                        if not self.handler.handle_command(cmd):
+                            self.running = False
+
+                    except KeyboardInterrupt:
+                        break
 
         except Exception as e:
             print(f"ошибка подключения: {e}")
