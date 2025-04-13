@@ -1,0 +1,12 @@
+down
+down
+attack www
+right
+
+addmon www coords 1 1 hello "SKKS SKSKS SKS" hp 21
+up
+attack www with axe
+attack eyes
+attack www
+up
+exit
