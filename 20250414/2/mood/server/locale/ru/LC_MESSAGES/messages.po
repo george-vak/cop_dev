@@ -2,12 +2,8 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: ru_RU.UTF8\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-msgid "Hello"
-msgstr "Привет"
-
-msgid "Welcome, {name}!"
-msgstr "Добро пожаловать, {name}!"
 
 msgid "Set up locale: {loc}!"
 msgstr "Установлена локаль: {loc}!"
@@ -18,6 +14,41 @@ msgstr "Добавлен монстр {curr_name} на ({m_x}, {m_y}) говор
 msgid "Replaced the old monster"
 msgstr "Старый монстр заменен"
 
+msgid "No monster here"
+msgstr "Тут нет монстров"
 
+msgid "No {name} here"
+msgstr "{name} здесь нет"
 
+msgid "point"
+msgid_plural "points"
+msgstr[0] "очко"
+msgstr[1] "очка"
+msgstr[2] "очков"
+
+msgid "You killed {name} by {weapon} ({damag} {points_damag})"
+msgstr "Вы уничтожили {name} с помощью {weapon} снеся {damag} {points_damag} здоровья"
+
+msgid "You hit {name} {hit} {points_hit} by {weapon}, now it has {hp_left} {points_hp_left}"
+msgstr "Вы ударили {name} снеся {hit} {points_hit} здоровья с помощью {weapon}, теперь у него {hp_left} {points_hp_left} здоровья"
+
+#обрабатываем бродкасты
+
+msgid "{username} joined the game!"
+msgstr "{username} присоединился к игре!"
+
+msgid "{username} left the game."
+msgstr "{username} покинул игру."
+
+msgid "{username} added {monster} with {hp} {points_hp}"
+msgstr "{username} добавил {monster} у него {hp} {points_hp} здоровья"
+
+msgid "{username} replaced old monster {monster} with {hp} {points_hp}"
+msgstr "{username} заменил старого монстра на {monster}, у которого {hp} {points_hp} здоровья"
+
+msgid "{username} killed {monster} by {weapon} ({damag} {points_damag})"
+msgstr "{username} убил {monster} с помощью {weapon}, снеся {damag} {points_damag} здоровья"
+
+msgid "{username} attacked {monster} by {weapon}, now it has {hp_left} {points_hp_left}"
+msgstr "{username} атаковал {monster} с помощью {weapon}, теперь у него {hp_left} {points_hp_left} здоровья"
 

@@ -6,6 +6,7 @@ from queue import Queue
 from typing import Dict
 
 from .handlers import CommandHandler
+from .app import translate
 
 
 class MUDChatServer:
@@ -67,9 +68,22 @@ class MUDChatServer:
         """
         async with asyncio.Lock():
             tasks = []
-            for username, data in list(self.clients.items()):
-                if username != exclude_username:
-                    tasks.append(self._safe_send(data["writer"], message))
+            for username, data in self.clients.items():
+                if username == exclude_username:
+                    continue
+
+                writer = data["writer"]
+                locale = self.clients[username]["loc"]
+
+                if isinstance(message, tuple):
+                    template, params = message
+                    localized = translate(template, locale, **params)
+                else:
+                    localized = message
+
+                print(f"[broadcast] to {username} ({locale}): {localized}")
+                tasks.append(self._safe_send(writer, localized))
+
             if tasks:
                 await asyncio.gather(*tasks, return_exceptions=True)
 
@@ -126,7 +140,7 @@ class MUDChatServer:
                 pass
 
             await self.broadcast(
-                f"{username} left the game.",
+                ("{username} left the game.", {"username": username}),
                 exclude_username=username
             )
             print(f"{username} покинул сервер")
@@ -156,7 +170,7 @@ class MUDChatServer:
             await writer.drain()
 
             await self.broadcast(
-                f"{username} joined the game!",
+                ("{username} joined the game!", {"username": username}),
                 exclude_username=username
             )
             print(f"Новый игрок: {username}")
@@ -243,7 +257,7 @@ class MUDChatServer:
                             person_mess, cast_mess = self.handler.handle_comm(
                                 command, username
                             )
-                        print("gotta", person_mess, " and cast ",cast_mess)
+                        # print("### ", cast_mess, " ###")
 
                         if person_mess:
                             asyncio.run_coroutine_threadsafe(

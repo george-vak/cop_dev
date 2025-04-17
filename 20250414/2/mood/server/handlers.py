@@ -1,8 +1,7 @@
 """Commands handle file."""
 import random
 
-from app import translate
-
+from .app import translate
 
 class CommandHandler:
     """All commands handle class, no more."""
@@ -62,13 +61,17 @@ class CommandHandler:
                     "word": curr_word,
                     "hp": curr_hp,
                 }
-                person = (
-                    f"Added monster {curr_name} "
-                    f"to ({m_x}, {m_y}) saying {curr_word}"
-                )
+
+                person = translate("Added monster {curr_name} to ({m_x}, {m_y}) saying {curr_word}", loc,
+                                   curr_name=curr_name, m_x=m_x, m_y=m_y, curr_word=curr_word)
+
                 broadcast = (
-                    f"[bcast] {username} added "
-                    f"{curr_name} with {curr_hp} hp"
+                    "{username} added {monster} with {hp} {points_hp}",
+                    {
+                        "username": username,
+                        "monster": curr_name,
+                        "hp": curr_hp
+                    }
                 )
 
             else:
@@ -78,10 +81,14 @@ class CommandHandler:
                     "hp": curr_hp,
                 }
 
-                person = "[Сервер] Replaced the old monster"
+                person = translate("Replaced the old monster", loc)
                 broadcast = (
-                    f"[bcast] {username} replaced old monst "
-                    f"on {curr_name} with {curr_hp} hp"
+                    "{username} replaced old monster {monster} with {hp} {points_hp}",
+                    {
+                        "username": username,
+                        "monster": curr_name,
+                        "hp": curr_hp
+                    }
                 )
             self.add_monster(m_x, m_y, curr_name, curr_hp, curr_word)
             return person, broadcast
@@ -92,36 +99,55 @@ class CommandHandler:
             hit = self.arsenal[weapon]
 
             if self.field[y][x] == 0:
-                person = "No monster here"
+                person = translate("No monster here", loc)
                 return person, None
 
             elif name != self.field[y][x]["name"]:
-                person = f"No {name} here"
+                person = translate("No {name} here", loc, name=name)
                 return person, None
 
             elif self.field[y][x]["hp"] <= hit:
                 damag = self.field[y][x]["hp"]
                 self.field[y][x] = 0
                 self.del_monster(x, y)
-                person = f"U killed {name} by {weapon} ({damag} hp)"
+                person = translate(
+                    "You killed {name} by {weapon} ({damag} {points_damag})",
+                    loc,
+                    name=name,
+                    weapon=weapon,
+                    damag=damag
+                )
+
                 broadcast = (
-                    f"{username} killed "
-                    f"{name} by {weapon} ({damag} hp)"
+                    "{username} killed {monster} by {weapon} ({damag} {points_damag})",
+                    {
+                        "username": username,
+                        "monster": name,
+                        "weapon": weapon,
+                        "damag": damag
+                    }
                 )
                 return person, broadcast
 
             else:
                 self.field[y][x]["hp"] -= hit
                 self.monsters[(x, y)]["hp"] -= hit
-                person = (
-                    f"U hit {name} {hit} hp "
-                    f"by {weapon} and now it has "
-                    f"{self.field[y][x]['hp']} hp"
+                person = translate(
+                    "You hit {name} {hit} {points_hit} by {weapon}, now it has {hp_left} {points_hp_left}",
+                    loc,
+                    name=name,
+                    weapon=weapon,
+                    hit=hit,
+                    hp_left=self.field[y][x]['hp']
                 )
                 broadcast = (
-                    f"{username} attacked "
-                    f"{name} by {weapon}, now it has "
-                    f"{self.field[y][x]['hp']} hp"
+                    "{username} attacked {monster} by {weapon}, now it has {hp_left} {points_hp_left}",
+                    {
+                        "username": username,
+                        "monster": name,
+                        "weapon": weapon,
+                        "hp_left": self.field[y][x]['hp']
+                    }
                 )
                 return person, broadcast
 
@@ -134,7 +160,6 @@ class CommandHandler:
             self.server.clients[username]["loc"] = parts[1]
             person = translate("Set up locale: {loc}!", parts[1], loc=parts[1])
             broadcast = None
-            print("###", person)
             return person, broadcast
 
         return None
