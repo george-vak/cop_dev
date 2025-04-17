@@ -1,6 +1,8 @@
 """Commands handle file."""
 import random
 
+from app import translate
+
 
 class CommandHandler:
     """All commands handle class, no more."""
@@ -29,6 +31,7 @@ class CommandHandler:
         parts = comm.split()
         client_data = self.server.clients[username]
         x, y = client_data["x"], client_data["y"]
+        loc = client_data["loc"]
 
         if parts[0] == "move":
             dx, dy = int(parts[1]), int(parts[2])
@@ -38,7 +41,7 @@ class CommandHandler:
             client_data["x"], client_data["y"] = new_x, new_y
 
             if self.field[new_y][new_x] == 0:
-                person = f"[Сервер] Moved to {new_x} {new_y}"
+                person = f"Moved to {new_x} {new_y}"
                 return person, None
             else:
                 name = self.field[new_y][new_x]["name"]
@@ -60,7 +63,7 @@ class CommandHandler:
                     "hp": curr_hp,
                 }
                 person = (
-                    f"[Сервер] Added monster {curr_name} "
+                    f"Added monster {curr_name} "
                     f"to ({m_x}, {m_y}) saying {curr_word}"
                 )
                 broadcast = (
@@ -82,27 +85,27 @@ class CommandHandler:
                 )
             self.add_monster(m_x, m_y, curr_name, curr_hp, curr_word)
             return person, broadcast
-        
+
         elif parts[0] == "attack":
             name = str(parts[1])
             weapon = str(parts[2])
             hit = self.arsenal[weapon]
 
             if self.field[y][x] == 0:
-                person = "[Сервер] No monster here"
+                person = "No monster here"
                 return person, None
 
             elif name != self.field[y][x]["name"]:
-                person = f"[Сервер] No {name} here"
+                person = f"No {name} here"
                 return person, None
 
             elif self.field[y][x]["hp"] <= hit:
                 damag = self.field[y][x]["hp"]
                 self.field[y][x] = 0
                 self.del_monster(x, y)
-                person = f"[Сервер] u killed {name} by {weapon} ({damag} hp)"
+                person = f"U killed {name} by {weapon} ({damag} hp)"
                 broadcast = (
-                    f"[bcast] {username} killed "
+                    f"{username} killed "
                     f"{name} by {weapon} ({damag} hp)"
                 )
                 return person, broadcast
@@ -111,12 +114,12 @@ class CommandHandler:
                 self.field[y][x]["hp"] -= hit
                 self.monsters[(x, y)]["hp"] -= hit
                 person = (
-                    f"[Сервер] u hit {name} {hit} hp "
+                    f"U hit {name} {hit} hp "
                     f"by {weapon} and now it has "
                     f"{self.field[y][x]['hp']} hp"
                 )
                 broadcast = (
-                    f"[bcast] {username} attacked "
+                    f"{username} attacked "
                     f"{name} by {weapon}, now it has "
                     f"{self.field[y][x]['hp']} hp"
                 )
@@ -124,8 +127,16 @@ class CommandHandler:
 
         elif parts[0] == "sayall":
             person = None
-            broadcast = f"[bcast] {username}: {' '.join(parts[1:])}"
+            broadcast = f"{username}: {' '.join(parts[1:])}"
             return person, broadcast
+
+        elif parts[0] == "locale":
+            self.server.clients[username]["loc"] = parts[1]
+            person = translate("Set up locale: {loc}!", parts[1], loc=parts[1])
+            broadcast = None
+            print("###", person)
+            return person, broadcast
+
         return None
 
     def add_monster(self, x, y, name, hp, word):
@@ -195,10 +206,10 @@ class CommandHandler:
     def choose(self):
         cords, monster_data = random.choice(list(self.monsters.items()))
         side = random.choice([
-        (0, 1),
-        (1, 0),
-        (0, -1),
-        (-1, 0)
+            (0, 1),
+            (1, 0),
+            (0, -1),
+            (-1, 0)
         ])
         return cords, side
 

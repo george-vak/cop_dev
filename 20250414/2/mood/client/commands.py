@@ -49,12 +49,13 @@ class CommandHandler:
         elif comm == "help":
             help_text = """
             Доступные команды:
-            - up/down/left/right
-            - addmon www hello "privet mess" hp 34 coords 0 1
-            - attack www [with axe]
-            - sayall "bcast message"
-            - movemonsters "on/off"
-            - exit
+            up/down/left/right
+            addmon www hello "privet mess" hp 34 coords 0 1
+            attack www [with axe]
+            sayall "bcast message"
+            movemonsters "on/off"
+            locale ru_RU.UTF8 
+            exit
             """
             print(help_text)
 
@@ -69,6 +70,13 @@ class CommandHandler:
                 self.network.send_command(f"sayall {" ".join(args)}")
             else:
                 self.ui._print_error("not correct args")
+
+        elif comm == "locale":
+            if len(args) == 1:
+                self.network.send_command(f"locale {" ".join(args)}")
+            else:
+                self.ui._print_error("not correct")
+
         else:
             self.ui._print_error("invalid command")
         return True

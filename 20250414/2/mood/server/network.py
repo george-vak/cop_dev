@@ -29,7 +29,7 @@ class MUDChatServer:
         self.async_loop = asyncio.get_event_loop()
 
         self.periodic_run = True
-        self.periodic_interval = 10
+        self.periodic_interval = 15
         self.periodic_command = "CHECK"
 
     async def _periodic_worker(self):
@@ -126,11 +126,11 @@ class MUDChatServer:
                 pass
 
             await self.broadcast(
-                f"[bcast] {username} покинул игру",
+                f"{username} left the game.",
                 exclude_username=username
             )
-            del self.clients[username]
             print(f"{username} покинул сервер")
+            del self.clients[username]
 
     async def handle_client(self, reader, writer):
         """General handling func.
@@ -149,15 +149,14 @@ class MUDChatServer:
                 writer.close()
                 return
 
-            self.clients[username] = {"writer": writer, "x": 0, "y": 0}
+            self.clients[username] = {"writer": writer, "x": 0, "y": 0, "loc": None}
 
-            welcome_msg = (f"[Сервер] Добро пожаловать, {username}! "
-                           f"Ваша позиция: (0, 0)")
+            welcome_msg = f"<<< Welcome to Python-MUD 0.1 >>>"
             writer.write(welcome_msg.encode())
             await writer.drain()
 
             await self.broadcast(
-                f"[bcast] {username} присоединился к игре!",
+                f"{username} joined the game!",
                 exclude_username=username
             )
             print(f"Новый игрок: {username}")
@@ -229,7 +228,7 @@ class MUDChatServer:
                                 self.async_loop
                             )
                         asyncio.run_coroutine_threadsafe(
-                            self._safe_send(writer, f"[Сервер] Moving monsters: {turn}"),
+                            self._safe_send(writer, f"Moving monsters: {turn}"),
                             self.async_loop
                         )
 
@@ -244,7 +243,7 @@ class MUDChatServer:
                             person_mess, cast_mess = self.handler.handle_comm(
                                 command, username
                             )
-                        print(person_mess, cast_mess)
+                        print("gotta", person_mess, " and cast ",cast_mess)
 
                         if person_mess:
                             asyncio.run_coroutine_threadsafe(
@@ -292,7 +291,7 @@ class MUDChatServer:
 
         :return:
         """
-        await self.broadcast("[bcast] Сервер завершает работу. "
+        await self.broadcast("Сервер завершает работу. "
                              "Отключение...\n")
         for username in list(self.clients.keys()):
             await self.remove_client(username)

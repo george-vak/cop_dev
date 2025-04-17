@@ -1,0 +1,23 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: ru_RU.UTF8\n"
+
+msgid "Hello"
+msgstr "Привет"
+
+msgid "Welcome, {name}!"
+msgstr "Добро пожаловать, {name}!"
+
+msgid "Set up locale: {loc}!"
+msgstr "Установлена локаль: {loc}!"
+
+msgid "Added monster {curr_name} to ({m_x}, {m_y}) saying {curr_word}"
+msgstr "Добавлен монстр {curr_name} на ({m_x}, {m_y}) говорящий {curr_word}"
+
+msgid "Replaced the old monster"
+msgstr "Старый монстр заменен"
+
+
+
+
