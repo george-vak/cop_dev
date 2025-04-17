@@ -82,7 +82,7 @@ class CommandHandler:
                 )
             self.add_monster(m_x, m_y, curr_name, curr_hp, curr_word)
             return person, broadcast
-
+        
         elif parts[0] == "attack":
             name = str(parts[1])
             weapon = str(parts[2])
@@ -122,13 +122,11 @@ class CommandHandler:
                 )
                 return person, broadcast
 
-        elif parts[0] == "exit":
-            return "rem", username
-
         elif parts[0] == "sayall":
             person = None
             broadcast = f"[bcast] {username}: {' '.join(parts[1:])}"
             return person, broadcast
+        return None
 
     def add_monster(self, x, y, name, hp, word):
         """Add monster to dict.

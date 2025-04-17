@@ -14,6 +14,7 @@ ALLOWED_COMMANDS = [
     "exit",
     "help",
     "sayall",
+    "movemonsters",
 ]
 ARSENAL = {"sword": 10, "spear": 15, "axe": 20}
 

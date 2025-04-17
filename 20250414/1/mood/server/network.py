@@ -26,7 +26,7 @@ class MUDChatServer:
         self.lock = threading.Lock()
         self.running = False
         self.handler = CommandHandler(self)
-        self.async_loop = None
+        self.async_loop = asyncio.get_event_loop()
 
         self.periodic_run = True
         self.periodic_interval = 10
@@ -39,14 +39,25 @@ class MUDChatServer:
             if self.periodic_run:
                 self.command_queue.put(("SYSTEM", "PERIODIC", self.periodic_command))
 
-    def toggle_periodic(self, enable: bool):
-        """Turner for periodic"""
-        self.periodic_run = enable
-        if enable:
-            asyncio.create_task(self._periodic_worker())
-            print("[Periodic] Периодические команды включены")
-        else:
-            print("[Periodic] Периодические команды выключены")
+    async def start_periodic(self):
+        if hasattr(self, '_periodic_task') and not self._periodic_task.done():
+            return
+
+        self.periodic_run = True
+        self._periodic_task = asyncio.create_task(self._periodic_worker())
+        print("[Periodic] Запущено")
+
+    async def stop_periodic(self):
+        if not self.periodic_run:
+            return
+        self.periodic_run = False
+        if hasattr(self, '_periodic_task'):
+            self._periodic_task.cancel()
+            try:
+                await self._periodic_task
+            except asyncio.CancelledError:
+                pass
+        print("[Periodic] Остановлено")
 
     async def broadcast(self, message, exclude_username=None):
         """Broadcasting.
@@ -205,11 +216,29 @@ class MUDChatServer:
                                 )
 
                 else:
-                    if command == "exit":
+                    if command.startswith("movemonsters"):
+                        _, turn = command.split()[:2]
+                        if turn == "on":
+                            asyncio.run_coroutine_threadsafe(
+                                self.start_periodic(),
+                                self.async_loop
+                            )
+                        else:
+                            asyncio.run_coroutine_threadsafe(
+                                self.stop_periodic(),
+                                self.async_loop
+                            )
+                        asyncio.run_coroutine_threadsafe(
+                            self._safe_send(writer, f"[Сервер] Moving monsters: {turn}"),
+                            self.async_loop
+                        )
+
+                    elif command == "exit":
                         asyncio.run_coroutine_threadsafe(
                             self.remove_client(username),
                             self.async_loop
                         )
+
                     else:
                         with self.lock:
                             person_mess, cast_mess = self.handler.handle_comm(
@@ -232,7 +261,7 @@ class MUDChatServer:
                             )
 
             except Exception as e:
-                print(f"[ERROR] Ошибка обработки команды: {str(e)}")
+                print(f"[ERROR] Ошибка обработки команды: {command} :: {str(e)}")
 
     def _run_async_loop(self):
         asyncio.set_event_loop(self.async_loop)
@@ -244,10 +273,7 @@ class MUDChatServer:
         )
         self.running = True
         print(f"Сервер запущен на {self.host}:{self.port}")
-
-        if self.periodic_run:
-            self._periodic_task = asyncio.create_task(self._periodic_worker())
-            print(f"[Periodic] Автозапуск команд каждые {self.periodic_interval} сек")
+        await self.start_periodic()
 
     def shutdown(self):
         """Off server func.

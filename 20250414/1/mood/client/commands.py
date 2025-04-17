@@ -1,7 +1,5 @@
 """Controlling commands file."""
-
 import shlex
-
 from .config import ARSENAL, get_allowed_monsters
 
 
@@ -55,9 +53,17 @@ class CommandHandler:
             - addmon www hello "privet mess" hp 34 coords 0 1
             - attack www [with axe]
             - sayall "bcast message"
+            - movemonsters "on/off"
             - exit
             """
             print(help_text)
+
+        elif comm == "movemonsters":
+            if args[0] == "on" or args[0] == "off":
+                self.network.send_command(f"{comm} {args[0]}")
+            else:
+                self.ui._print_error("not correct args: use on/off")
+
         elif comm == "sayall":
             if len(args) == 1:
                 self.network.send_command(f"sayall {" ".join(args)}")
