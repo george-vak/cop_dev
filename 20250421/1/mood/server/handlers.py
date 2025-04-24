@@ -27,6 +27,7 @@ class CommandHandler:
         Returns:
             tuple: (personal_message, broadcast_message)
         """
+        print(f"[DEBUG] comm: {comm}\n")
         parts = comm.split()
         client_data = self.server.clients[username]
         x, y = client_data["x"], client_data["y"]
@@ -162,7 +163,7 @@ class CommandHandler:
             broadcast = None
             return person, broadcast
 
-        return None
+        return "Comm not handled", None
 
     def add_monster(self, x, y, name, hp, word):
         """Add monster to dict.
@@ -194,6 +195,10 @@ class CommandHandler:
         return
 
     def general_move(self):
+        """Delete monster from dict.
+        
+        :return: 0.
+        """
         if not self.monsters:
             print("нет монстров")
             return
@@ -226,9 +231,13 @@ class CommandHandler:
             else:
                 att += 1
 
-        return
+        return None
 
     def choose(self):
+        """Monst to move chooser.
+        
+        :return: monster by coords, side to move.
+        """
         cords, monster_data = random.choice(list(self.monsters.items()))
         side = random.choice([
             (0, 1),
@@ -239,6 +248,12 @@ class CommandHandler:
         return cords, side
 
     def mons_move(self, cords, side):
+        """Movement processing.
+        
+        :param cords:
+        :param side:
+        :return: old, mew coords.
+        """
         x, y = cords
         nx, ny = (x + side[0]) % 10, (y + side[1]) % 10
 

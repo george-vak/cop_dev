@@ -81,7 +81,7 @@ class MUDChatServer:
                 else:
                     localized = message
 
-                print(f"[broadcast] to {username} ({locale}): {localized}")
+                print(f"[bc] to {username} ({locale}): {localized}")
                 tasks.append(self._safe_send(writer, localized))
 
             if tasks:
@@ -206,6 +206,7 @@ class MUDChatServer:
         while self.running:
             try:
                 writer, username, command = self.command_queue.get()
+                command = str(command)
                 if writer == "SYSTEM":
                     with self.lock:
                         res = self.handler.general_move()
@@ -311,4 +312,3 @@ class MUDChatServer:
             await self.remove_client(username)
         self.server.close()
         await self.server.wait_closed()
-        self.async_loop.stop()
