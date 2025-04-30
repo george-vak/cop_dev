@@ -5,13 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1009c637-e385-418b-9fd6-176dfcdcfb37" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/server/app.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/locale/ru/LC_MESSAGES/messages.mo" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/locale/ru/LC_MESSAGES/messages.po" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/commands.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/commands.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/handlers.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/handlers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/network.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/network.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../Pipfile" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Pipfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../20250414/2/mood/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../20250414/2/mood/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/locale/ru/LC_MESSAGES/messages.mo" beforeDir="false" afterPath="$PROJECT_DIR$/server/locale/ru/LC_MESSAGES/messages.mo" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/locale/ru/LC_MESSAGES/messages.po" beforeDir="false" afterPath="$PROJECT_DIR$/server/locale/ru/LC_MESSAGES/messages.po" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,7 +35,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "work",
-    "last_opened_file_path": "/Users/georgiyvakulenko/cop_dev/20250414/2/mood",
+    "last_opened_file_path": "/Users/georgiyvakulenko/cop_dev/20250428/1/mood",
     "settings.editor.selected.configurable": "preferences.keymap"
   }
 }]]></component>

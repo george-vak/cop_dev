@@ -4,15 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1009c637-e385-418b-9fd6-176dfcdcfb37" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/server/app.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/locale/ru/LC_MESSAGES/messages.mo" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/locale/ru/LC_MESSAGES/messages.po" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/commands.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/commands.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/handlers.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/handlers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/network.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/network.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../Pipfile" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Pipfile" afterDir="false" />
-    </list>
+    <list default="true" id="1009c637-e385-418b-9fd6-176dfcdcfb37" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -30,18 +22,18 @@
     <option name="showLibraryContents" value="true" />
     <option name="sortKey" value="BY_TIME_DESCENDING" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python.__init__.executor": "Run",
-    "Python.handlers.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "work",
-    "last_opened_file_path": "/Users/georgiyvakulenko/cop_dev/20250414/2/mood",
-    "settings.editor.selected.configurable": "preferences.keymap"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.__init__.executor&quot;: &quot;Run&quot;,
+    &quot;Python.handlers.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;work&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/georgiyvakulenko/cop_dev/20250414/2/mood&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>

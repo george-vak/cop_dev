@@ -15,14 +15,13 @@ def get_translator(locale: str) -> gettext.NullTranslations:
             fallback=True
         )
     except Exception as e:
-        print(f"[!] Ошибка загрузки переводов для {locale}: {e}")
+        print(f"[!] Ошибка загрузки переводов: {locale}: {e}")
         return gettext.NullTranslations()
 
 def translate(text: str, locale: str = "en", **kwargs) -> str:
     translator = get_translator(locale)
     translated = translator.gettext(text)
 
-    # Автообработка плуралов вида {points_something}
     plural_matches = re.findall(r"{points_(\w+)}", translated)
     for var_name in plural_matches:
         try:
