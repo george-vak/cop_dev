@@ -1,0 +1,6 @@
+cowsay-python
+
+[dev]
+pytest
+black
+mypy

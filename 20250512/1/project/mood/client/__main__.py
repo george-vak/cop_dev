@@ -17,6 +17,6 @@ def main():
         client.connect(comm_file=command_file)
     else:
         client.connect()
-
+        
 if __name__ == "__main__":
     main()

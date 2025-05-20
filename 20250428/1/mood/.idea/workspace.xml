@@ -5,10 +5,73 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1009c637-e385-418b-9fd6-176dfcdcfb37" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../../../20250414/2/mood/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../20250414/2/mood/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/locale/ru/LC_MESSAGES/messages.mo" beforeDir="false" afterPath="$PROJECT_DIR$/server/locale/ru/LC_MESSAGES/messages.mo" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/locale/ru/LC_MESSAGES/messages.po" beforeDir="false" afterPath="$PROJECT_DIR$/server/locale/ru/LC_MESSAGES/messages.po" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/prog" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/.idea/mood.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/Makefile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/clean.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/client/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/client/__main__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/client/client.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/client/commands.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/client/completer.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/client/config.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/client/network.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/client/ui.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/docs/Makefile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/docs/make.bat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/docs/source/conf.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/docs/source/index.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/docs/source/modules.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/docs/source/server.handlers.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/docs/source/server.network.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/docs/source/server.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/mood_project.egg-info/PKG-INFO" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/mood_project.egg-info/SOURCES.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/mood_project.egg-info/dependency_links.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/mood_project.egg-info/entry_points.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/mood_project.egg-info/requires.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/mood_project.egg-info/top_level.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/pytest.ini" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/server/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/server/__main__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/server/app.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/server/handlers.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/server/locale/messages.pot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/server/locale/ru/LC_MESSAGES/messages.mo" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/server/locale/ru/LC_MESSAGES/messages.po" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/server/network.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/tests/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/tests/client_tests/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/tests/client_tests/attack_test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/tests/client_tests/move_test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/tests/server_test/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/tests/server_test/fight_test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/tests/server_test/life_test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/tests/server_test/meet_test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/tests/server_test/spawn_test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood/tests/server_test/welcome_test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood_project.egg-info/PKG-INFO" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood_project.egg-info/SOURCES.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood_project.egg-info/dependency_links.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood_project.egg-info/entry_points.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood_project.egg-info/requires.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/mood_project.egg-info/top_level.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../20250512/1/project/pyproject.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/__main__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/client.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/commands.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/commands.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/client/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/__main__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Pipfile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Pipfile.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
