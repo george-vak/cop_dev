@@ -5,7 +5,7 @@ Summary: Client-server monster game project
 Author: George Vakulenko
 Requires-Python: >=3.7
 Description-Content-Type: text/markdown
-Requires-Dist: cowsay-python
+Requires-Dist: python-cowsay
 Provides-Extra: dev
 Requires-Dist: pytest; extra == "dev"
 Requires-Dist: black; extra == "dev"
