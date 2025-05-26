@@ -2,6 +2,7 @@ import shutil
 import os
 
 def clean_targets():
+    
     docs_build_dir = 'docs/build/html'
     if os.path.isdir(docs_build_dir):
         print(f'Removing directory {docs_build_dir} ...')

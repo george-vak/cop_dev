@@ -1,5 +1,6 @@
 README.md
 pyproject.toml
+setup.cfg
 mood/__init__.py
 mood/clean.py
 mood/client/__init__.py
