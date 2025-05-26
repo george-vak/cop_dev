@@ -157,7 +157,6 @@ exit
 
     def handle_doc(self):
         doc_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'docs', 'build', 'html', 'index.html'))
-        # print(doc_path)
         url = f'file://{doc_path}'
         try:
             webbrowser.open(url)

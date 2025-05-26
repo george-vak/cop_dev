@@ -1,6 +1,7 @@
 [packages]
 sphinx = "*"
 python-cowsay = "*"
+build = "*"
 
 [dev-packages]
 pytest = "*"

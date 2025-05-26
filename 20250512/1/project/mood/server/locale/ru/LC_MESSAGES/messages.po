@@ -7,82 +7,62 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-05-26 11:34+0300\n"
+"POT-Creation-Date: 2025-05-25 13:17+0300\n"
 "PO-Revision-Date: 2025-05-25 12:59+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru_RU.UTF8\n"
 "Language-Team: ru <LL@li.org>\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.11.0\n"
+"Generated-By: Babel 2.17.0\n"
 
-#: server/app.py:29
+msgid "Set up locale: {loc}!"
+msgstr "Установлена локаль: {loc}!"
+
+msgid "Added monster {curr_name} to ({m_x}, {m_y}) saying {curr_word}"
+msgstr "Добавлен монстр {curr_name} на ({m_x}, {m_y}) говорящий {curr_word}"
+
+msgid "Replaced the old monster"
+msgstr "Старый монстр заменен"
+
+msgid "No monster here"
+msgstr "Тут нет монстров"
+
+msgid "No {name} here"
+msgstr "{name} здесь нет"
+
 msgid "point"
 msgid_plural "points"
 msgstr[0] "очко"
 msgstr[1] "очка"
 msgstr[2] "очков"
 
-#~ msgid "Set up locale: {loc}!"
-#~ msgstr "Установлена локаль: {loc}!"
+msgid "You killed {name} by {weapon} ({damag} {points_damag})"
+msgstr "Вы уничтожили {name} с помощью {weapon} снеся {damag} {points_damag} здоровья"
 
-#~ msgid "Added monster {curr_name} to ({m_x}, {m_y}) saying {curr_word}"
-#~ msgstr "Добавлен монстр {curr_name} на ({m_x}, {m_y}) говорящий {curr_word}"
+msgid "You hit {name} {hit} {points_hit} by {weapon}, now it has {hp_left} {points_hp_left}"
+msgstr "Вы ударили {name} снеся {hit} {points_hit} здоровья с помощью {weapon}, теперь у него {hp_left} {points_hp_left} здоровья"
 
-#~ msgid "Replaced the old monster"
-#~ msgstr "Старый монстр заменен"
+#обрабатываем бродкасты
 
-#~ msgid "No monster here"
-#~ msgstr "Тут нет монстров"
+msgid "{username} joined the game!"
+msgstr "{username} присоединился к игре!"
 
-#~ msgid "No {name} here"
-#~ msgstr "{name} здесь нет"
+msgid "{username} left the game."
+msgstr "{username} покинул игру."
 
-#~ msgid "You killed {name} by {weapon} ({damag} {points_damag})"
-#~ msgstr ""
-#~ "Вы уничтожили {name} с помощью {weapon}"
-#~ " снеся {damag} {points_damag} здоровья"
+msgid "{username} added {monster} with {hp} {points_hp}"
+msgstr "{username} добавил {monster} у него {hp} {points_hp} здоровья"
 
-#~ msgid ""
-#~ "You hit {name} {hit} {points_hit} by "
-#~ "{weapon}, now it has {hp_left} "
-#~ "{points_hp_left}"
-#~ msgstr ""
-#~ "Вы ударили {name} снеся {hit} "
-#~ "{points_hit} здоровья с помощью {weapon}, "
-#~ "теперь у него {hp_left} {points_hp_left} "
-#~ "здоровья"
+msgid "{username} replaced old monster {monster} with {hp} {points_hp}"
+msgstr "{username} заменил старого монстра на {monster}, у которого {hp} {points_hp} здоровья"
 
-# обрабатываем бродкасты
-#~ msgid "{username} joined the game!"
-#~ msgstr "{username} присоединился к игре!"
+msgid "{username} killed {monster} by {weapon} ({damag} {points_damag})"
+msgstr "{username} убил {monster} с помощью {weapon}, снеся {damag} {points_damag} здоровья"
 
-#~ msgid "{username} left the game."
-#~ msgstr "{username} покинул игру."
-
-#~ msgid "{username} added {monster} with {hp} {points_hp}"
-#~ msgstr "{username} добавил {monster} у него {hp} {points_hp} здоровья"
-
-#~ msgid "{username} replaced old monster {monster} with {hp} {points_hp}"
-#~ msgstr ""
-#~ "{username} заменил старого монстра на "
-#~ "{monster}, у которого {hp} {points_hp} "
-#~ "здоровья"
-
-#~ msgid "{username} killed {monster} by {weapon} ({damag} {points_damag})"
-#~ msgstr ""
-#~ "{username} убил {monster} с помощью "
-#~ "{weapon}, снеся {damag} {points_damag} "
-#~ "здоровья"
-
-#~ msgid ""
-#~ "{username} attacked {monster} by {weapon}, "
-#~ "now it has {hp_left} {points_hp_left}"
-#~ msgstr ""
-#~ "{username} атаковал {monster} с помощью "
-#~ "{weapon}, теперь у него {hp_left} "
-#~ "{points_hp_left} здоровья"
+msgid "{username} attacked {monster} by {weapon}, now it has {hp_left} {points_hp_left}"
+msgstr "{username} атаковал {monster} с помощью {weapon}, теперь у него {hp_left} {points_hp_left} здоровья"
 
